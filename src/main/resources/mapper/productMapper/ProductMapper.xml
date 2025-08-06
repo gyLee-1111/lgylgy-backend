@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bmm.api.product.ProductMapper">
+
+  <!--  <select id="getCountReview" parameterType="int" resultType="com.bmm.api.product.ReviewStatsDTO"> -->
+    
+   		<!--  SQL ID : ProductMapper.getCountReview -->
+<!--	 SELECT COUNT(*)
+		FROM tb_keyword tk
+		INNER JOIN tb_product tp
+	  	ON tk.keyword_code = tp.keyword_code
+		INNER JOIN tb_review tr
+	 	ON tr.product_code = tp.product_code
+	WHERE tk.keyword_code = 1;
+    </select> -->
+    
+    
+<!--    <select id="getCountReview" parameterType="int" resultType="com.bmm.api.product.ReviewStatsDTO">
+    
+    	  SQL ID : ProductMapper.getCountReview 
+	 	SELECT 
+	        ROUND(AVG(sub.review_count)) AS pageAvgReview,
+	        (
+	            SELECT ROUND(AVG(t.review_count))
+	            FROM (
+	                SELECT COUNT(*) AS review_count
+	                FROM tb_product tp2
+	                INNER JOIN tb_review tr2 ON tp2.product_code = tr2.product_code
+	                WHERE tp2.keyword_code = #{keywordCode}
+	                GROUP BY tp2.product_code
+	                ORDER BY review_count DESC
+	                LIMIT 3
+	            ) t
+	        ) AS top3AvgReview,
+	        (
+	            SELECT t2.review_count
+	            FROM (
+	                SELECT COUNT(*) AS review_count
+	                FROM tb_product tp3
+	                INNER JOIN tb_review tr3 ON tp3.product_code = tr3.product_code
+	                WHERE tp3.keyword_code = #{keywordCode}
+	                GROUP BY tp3.product_code
+	                ORDER BY review_count DESC
+	                LIMIT 1 OFFSET 5
+	            ) t2
+	        ) AS middlePageReview
+	    FROM (
+	        SELECT COUNT(*) AS review_count
+	        FROM tb_product tp
+	        LEFT JOIN tb_review tr ON tp.product_code = tr.product_code
+	        WHERE tp.keyword_code = #{keywordCode}
+	        GROUP BY tp.product_code
+	    ) sub
+	</select>
+	
+	<select id="getShoppingDetail" parameterType="int" resultType="com.bmm.api.product.ReviewStatsDTO">
+	
+		  SQL ID : ProductMapper.getShoppingDetail 	
+	  	SELECT 
+	        ROUND(AVG(sub.review_score), 2) AS top10AvgScore,
+	        SUM(sub.sales * sub.amount) AS top10Sales,
+	        (
+	            SELECT SUM(sub2.sales * sub2.amount)
+	            FROM (
+	                SELECT tp.sales, tp.amount
+	                FROM tb_keyword tk
+	                INNER JOIN tb_product tp ON tk.keyword_code = tp.keyword_code
+	                INNER JOIN tb_review tr ON tr.product_code = tp.product_code
+	                WHERE tk.keyword_code = #{keywordCode}
+	                ORDER BY (tp.sales * tp.amount) DESC
+	                LIMIT 20
+	            ) sub2
+	        ) AS top20Sales
+	    FROM (
+	        SELECT tp.sales, tp.amount, tr.review_score
+	        FROM tb_keyword tk
+	        INNER JOIN tb_product tp ON tk.keyword_code = tp.keyword_code
+	        INNER JOIN tb_review tr ON tr.product_code = tp.product_code
+	        WHERE tk.keyword_code = #{keywordCode}
+	        ORDER BY (tp.sales * tp.amount) DESC
+	        LIMIT 10
+	    ) sub
+    
+    </select>-->
+    
+<!--    <select id="getScore" parameterType="double" resultType="string">-->
+<!--    	  SQL ID : ProductMapper.getScore -->
+<!--	    SELECT-->
+<!--	    	RANK_NM-->
+<!--	    FROM TB_SCORE_RANK-->
+<!--	    WHERE #{score} BETWEEN RANK_START_SCORE AND RANK_END_SCORE-->
+<!--	</select>-->
+	
+	<!--<select id="getGender" resultType="com.bmm.api.product.ReviewStatsDTO">
+		  SQL ID : ProductMapper.getGender 
+		SELECT
+		  COUNT(CASE WHEN USER_GENDER = 'USER_GENDER_01' THEN 1 END) AS userGenderMCnt,
+		  COUNT(CASE WHEN USER_GENDER = 'USER_GENDER_02' THEN 1 END) AS userGenderFMCnt
+		FROM TB_USER;
+		
+	
+    </select>-->
+   
+	<select id="getListProductNaver" parameterType="int" resultType="com.bmm.api.product.ProductDTO">
+    
+   <!--  SQL ID : ProductMapper.getListProductNaver -->
+		SELECT 
+			tp.KEYWORD_CODE,
+			tp.PRODUCT_CODE,
+			tp.PRODUCT_NM,
+			tp.SALES,
+			tp.AMOUNT,
+			tp.PLATFORM,
+			tp.PRODUCT_IMG,
+			tp.REGISTRATION_DT,
+			tp.DELIVERY_DATE,
+			(SELECT COUNT(*) FROM TB_REVIEW tr WHERE tp.PRODUCT_CODE = tr.PRODUCT_CODE) AS REVIEW_CNT,
+			(SELECT AVG(REVIEW_SCORE)
+			FROM TB_REVIEW WHERE PRODUCT_CODE = tp.PRODUCT_CODE) as AVG_SCORE
+		FROM TB_PRODUCT tp
+		WHERE KEYWORD_CODE = #{keywordCode}
+		AND tp.PLATFORM = 'PLATFORM_01'
+    </select>
+    <select id="getTotalPriceNaver" parameterType="int" resultType="com.bmm.api.product.ProductResponseDTO">
+    
+   <!--  SQL ID : ProductMapper.getTotalPriceNaver -->
+		SELECT 
+		    SUM(tp.SALES * tp.AMOUNT) AS TOTAL_PRICE
+		FROM TB_PRODUCT tp
+		WHERE tp.KEYWORD_CODE = #{keywordCode}
+		AND tp.PLATFORM = 'PLATFORM_01'
+    </select>
+    <select id="getListProductCoupang" parameterType="int" resultType="com.bmm.api.product.ProductDTO">
+    
+   	<!--  SQL ID : ProductMapper.getListProductCoupang -->
+		SELECT 
+			tp.KEYWORD_CODE,
+			tp.PRODUCT_CODE,
+			tp.PRODUCT_NM,
+			tp.SALES,
+			tp.AMOUNT,
+			tp.PLATFORM,
+			tp.PRODUCT_IMG,
+			tp.REGISTRATION_DT,
+			tp.DELIVERY_DATE,
+			COALESCE(COUNT(tr.REVIEW_CODE)) AS REVIEW_CNT,
+			ROUND(AVG(tr.REVIEW_SCORE), 2) AS AVG_SCORE,
+			(tp.SALES * tp.AMOUNT) AS TOTAL_SALES_AMOUNT,
+			tc.ROCKETDELI,
+			tc.COUPANG_CODE
+		FROM TB_PRODUCT tp
+		LEFT JOIN TB_REVIEW tr
+		ON tp.PRODUCT_CODE = tr.PRODUCT_CODE
+		LEFT JOIN TB_COUPANG tc
+		ON tp.PRODUCT_CODE = tc.PRODUCT_CODE
+		WHERE KEYWORD_CODE = #{keywordCode}
+		AND tp.PLATFORM = 'PLATFORM_02'
+		GROUP BY tp.PRODUCT_CODE, tp.PRODUCT_NM, tp.SALES, tp.AMOUNT, tp.PLATFORM, tp.PRODUCT_IMG, tp.REGISTRATION_DT, tc.ROCKETDELI, tc.COUPANG_CODE
+    </select>
+
+    
+    
+</mapper>

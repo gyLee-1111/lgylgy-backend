@@ -1,0 +1,11 @@
+package com.bmm.api.logIn;
+
+import java.util.List;
+
+public interface LogInService {
+	
+	public UserDTO getOngoingUser(String userId) throws Exception;
+
+	public List<UserRoleDTO> getListUserRole(String userId) throws Exception;
+	
+}

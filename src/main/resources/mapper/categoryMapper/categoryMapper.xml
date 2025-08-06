@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bmm.api.category.CategoryMapper">
+
+    <select id="getTopCategory" resultType="com.bmm.api.category.CategoryDTO">
+    
+   		<!--  SQL ID : CategoryMapper.getTopCategory -->
+   		SELECT
+			tc.CATEGORY_CODE,
+			tc.CATEGORY_NM,
+			tc.DEPTH
+		FROM TB_CATEGORY tc
+		WHERE tc.PARENT_CODE IS NULL
+    </select>
+    
+    <select id="getSubCategory" parameterType="string" resultType="com.bmm.api.category.CategoryDTO">
+    
+   		<!--  SQL ID : CategoryMapper.getSubCategory -->
+   		SELECT
+			tc.CATEGORY_CODE,
+			tc.CATEGORY_NM,
+			tc.DEPTH,
+			tc.PARENT_CODE
+		FROM TB_CATEGORY tc
+		WHERE tc.PARENT_CODE = #{parentCode}
+    </select>
+    
+    
+</mapper>

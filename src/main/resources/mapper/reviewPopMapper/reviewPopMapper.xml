@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bmm.api.reviewPop.ReviewPopMapper">
+
+    <select id="getListReview" parameterType="com.bmm.api.reviewPop.ReviewPopDTO" resultType="com.bmm.api.reviewPop.ReviewPopDTO">
+    
+   <!--  SQL ID : ProductMapper.getListReview -->
+		SELECT
+			REVIEW_CODE,
+			PRODUCT_CODE,
+			REVIEW_SCORE,
+			REVIEW_INFO,
+			INSERT_DT,
+			INSERT_USER_ID,
+			UPDATE_DT,
+			UPDATE_USER_ID
+		FROM TB_REVIEW 
+		WHERE PRODUCT_CODE = #{productCode}
+    </select>
+    <select id="getTotalPriceReview" parameterType="string" resultType="long">
+	    
+	  	 <!--  SQL ID : ProductMapper.getTotalPriceReview -->
+		SELECT SUM(TOP5_PRICE) AS TOTAL_PRICE
+			FROM(
+				SELECT 
+				    (tp.SALES * tp.AMOUNT) AS TOP5_PRICE
+				FROM TB_PRODUCT tp
+				WHERE tp.KEYWORD_CODE = 
+				(SELECT 
+					KEYWORD_CODE
+				FROM TB_PRODUCT 
+				WHERE PRODUCT_CODE = #{productCode})
+				AND tp.PLATFORM = 'PLATFORM_01'
+				order by TOP5_PRICE desc
+				limit 5
+			) as TOTAL_PRICE
+    </select>
+    
+    
+</mapper>
