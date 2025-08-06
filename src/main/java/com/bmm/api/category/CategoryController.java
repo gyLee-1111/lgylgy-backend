@@ -22,7 +22,11 @@ public class CategoryController {
     @GetMapping("/getTopCategory")
     public ResponseEntity<List<CategoryDTO>> getTopCategory(HttpServletRequest request) throws Exception {
     	
-    	
+    	/*
+    	 
+    	 --수정 text 커밋 푸시--
+    	 
+    	 */
     	List<CategoryDTO> list = categoryService.getTopCategory();
       	
     	return ResponseEntity.ok(list);
