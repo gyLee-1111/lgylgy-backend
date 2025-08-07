@@ -10,5 +10,7 @@ public interface LogInMapper {
 	public UserDTO getOngoingUser(String userId);
 	 
 	public List<UserRoleDTO> getListUserRole(String userId);
+	
+	public List<UserMenuDTO> getUserMenu(String roleCode);
 
 }

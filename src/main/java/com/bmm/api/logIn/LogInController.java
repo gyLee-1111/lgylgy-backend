@@ -8,12 +8,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bmm.api.logIn.security.JwtUtil;
+import com.bmm.api.product.ProductDTO;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -58,9 +60,10 @@ public class LogInController {
 		
 		List<UserRoleDTO> userRoleList = logInService.getListUserRole(userId);
 		
-		System.out.println("###################@#" + userRoleList);
+	//	System.out.println("###유저롤##@#" + userRoleList.getRoleCode());
 		
 		String token = jwtUtil.generateAccessToken(userId, userRoleList.get(0));
+		
 		
 		LogInResponseDTO response = new LogInResponseDTO();
 		response.setUserId(userId);
@@ -70,7 +73,7 @@ public class LogInController {
 		//전체 권한 목록
 	    response.setUserRoleList(userRoleList);
 	    
-	    
+	    System.out.println("###################@#" + userRoleList.get(0));
 		//리프레쉬 토큰 
 		String refreshToken = jwtUtil.generateRefreshToken(userId);
 		
@@ -123,14 +126,13 @@ public class LogInController {
 			
 			responseDto.setUserId(userId);
 			responseDto.setToken(newAccessToken);
+			
 			return ResponseEntity.ok(responseDto);
 			
 		} catch(Exception e){
 			return ResponseEntity.status(500).body("권한 조회 실패");
 		}
-		
 	}
-	
 	
     @PostMapping("/logOut")
     public ResponseEntity<?> logOut(HttpServletResponse response) {
@@ -145,19 +147,6 @@ public class LogInController {
         response.addHeader("Set-Cookie", deleteCookie.toString());
         return ResponseEntity.ok("로그아웃 성공");
     }
-	/*
-    @GetMapping("/test")
-    public ResponseEntity<?>  getListProduct(HttpServletRequest request, 
-    										 Authentication authentication
-    		) throws Exception {
-    	
-    	String userId = (String)authentication.getPrincipal();
-    	
-    	System.out.println("auth_userid = " + userId);
-    	System.out.println("test come");
-        return ResponseEntity.ok("ok");
-    }
-    */
     
     @PostMapping(value = "/changeRole")
 	public ResponseEntity<?> changeRole(@RequestParam String roleCode,
@@ -210,7 +199,7 @@ public class LogInController {
 			servletResponse.addHeader("Set-Cookie", httpOnlyCookie.toString());
 			
 			System.out.println("userRoleList###################@#" + userRoleList);
-			
+			System.out.println("현재권한###################@#" + currentRole);
 			
 			System.out.println("refreshToken###################@#" + refreshToken);
 			return ResponseEntity.ok(response);
@@ -220,6 +209,15 @@ public class LogInController {
 		}
 		
 	}
+    
+	@GetMapping("/getUserMenu")
+	public ResponseEntity<List<UserMenuDTO>> getUserMenu(@RequestParam String roleCode) throws Exception {
+	
+		List<UserMenuDTO> list = logInService.getUserMenu(roleCode);
+		
+		return ResponseEntity.ok(list);
+	}
+	
     
 
 }
