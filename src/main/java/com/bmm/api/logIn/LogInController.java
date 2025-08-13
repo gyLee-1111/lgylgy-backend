@@ -1,6 +1,7 @@
 package com.bmm.api.logIn;
 
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.mindrot.jbcrypt.BCrypt;
@@ -15,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bmm.api.logIn.security.JwtUtil;
-import com.bmm.api.product.ProductDTO;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -212,8 +212,25 @@ public class LogInController {
     
 	@GetMapping("/getUserMenu")
 	public ResponseEntity<List<UserMenuDTO>> getUserMenu(@RequestParam String roleCode) throws Exception {
-	
+		System.out.println("#################"+roleCode);
 		List<UserMenuDTO> list = logInService.getUserMenu(roleCode);
+		System.out.println("상위 메뉴 수: " + list.size());
+		List<UserMenuDTO> sublist = logInService.getUserSubMenu(roleCode);
+		System.out.println("하위 메뉴 수: " + sublist.size());
+		for (UserMenuDTO parent : list) {
+			System.out.println("asdsad#################@#" + parent);
+		    parent.setChildren(new ArrayList<>());
+		    for (UserMenuDTO child : sublist) {
+		    	System.out.println(" - 자식 후보: " + child.getMenuNm() + " → 부모코드: " + child.getParentCode());
+		    	System.out.println("child###############@#" + child);
+		        if (parent.getMenuCode() == child.getParentCode()) {
+		            parent.getChildren().add(child);
+		            System.out.println("childchild###############@#");
+
+		         //   System.out.println("childchild###############@#" + child.getParentCode());
+		        }
+		    }
+		}
 		
 		return ResponseEntity.ok(list);
 	}

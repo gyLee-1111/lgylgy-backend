@@ -36,7 +36,6 @@
 			tum.MENU_CODE,
 			tum.MENU_NM,
 			tum.DEPTH,
-			tum.PARENT_CODE,
 			tr.ROLE_CODE,
 			tr.ROLE_NM,
 			tr.ROLE_GROUP
@@ -45,6 +44,33 @@
 		JOIN TB_ROLE tr ON tmr.ROLE_CODE = tr.ROLE_CODE
 		WHERE tr.ROLE_CODE = #{roleCode}
 		AND DEPTH = 1
+		
+	</select>
+	<select id="getUserSubMenu" parameterType="string" resultType="com.bmm.api.logIn.UserMenuDTO">
+	
+	<!--	SQL ID : LogInMapper.getUserSubMenu -->  <!--사용자 권한 리스트 가져오기-->
+		
+		SELECT
+			tum.MENU_CODE, 
+			tum.MENU_NM,
+			tum.DEPTH,
+			tum.PARENT_CODE,
+			tum.PATH,
+			tr.ROLE_CODE,
+			tr.ROLE_NM,
+			tr.ROLE_GROUP
+		FROM TB_USER_MENU tum
+		JOIN TB_MENU_ROLE tmr ON tum.MENU_CODE = tmr.MENU_CODE
+		JOIN TB_ROLE tr ON tmr.ROLE_CODE = tr.ROLE_CODE
+		WHERE PARENT_CODE IN
+		(SELECT
+			tum.MENU_CODE
+		FROM TB_USER_MENU tum
+		JOIN TB_MENU_ROLE tmr ON tum.MENU_CODE = tmr.MENU_CODE
+		JOIN TB_ROLE tr on tmr.ROLE_CODE = tr.ROLE_CODE
+		WHERE DEPTH = 1)
+		AND tr.ROLE_CODE = #{roleCode}
+		ORDER BY tum.MENU_CODE
 		
 	</select>
 

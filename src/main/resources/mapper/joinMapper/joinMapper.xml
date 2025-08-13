@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bmm.api.joinMembership.JoinMapper">
+	<insert id="insertVerification" parameterType="com.bmm.api.joinMembership.VerificationDTO">
+	
+	<!--	SQL ID : JoinMapper.insertVerification -->
+	    INSERT INTO TB_VERIFICATION (
+			EMAIL,
+			CODE,
+			EXPIRATION_TIME,
+			INSERT_DT
+		)
+	    VALUES (
+			#{email},
+			#{code},
+			#{expirationTime},
+			CURRENT_TIMESTAMP
+		)
+	</insert>
+    <select id="getVerification" parameterType="string" resultType="com.bmm.api.joinMembership.VerificationDTO">
+		<!--  SQL ID : JoinMapper.getKeywordNm -->
+		SELECT 
+			EMAIL,
+			CODE,
+			EXPIRATION_TIME,
+			INSERT_DT
+		FROM TB_VERIFICATION
+		WHERE EMAIL = #{email}
+		ORDER BY INSERT_DT DESC
+		LIMIT 1
+    </select>
+    <insert id="insertUser" parameterType="com.bmm.api.joinMembership.JoinMembershipDTO">
+	
+	<!--	SQL ID : JoinMapper.insertUser -->
+	    INSERT INTO TB_USER	(
+			USER_ID,
+			USER_PASSWORD,
+			USER_NM,
+			USER_NICKNM,
+			USER_GENDER,
+			USER_BIRTH,
+			PHONE_NUMBER,
+			EMAIL,
+			LOCK_YN,
+			DORMANT_YN,
+			MEMBERSHIP,
+			INSERT_DT
+		)
+	    VALUES (
+			#{email},
+			#{userPassword},
+			#{userNm},
+			#{userNm},
+			#{userGender},
+			#{userBirth},
+			#{phoneNumber},
+			#{email},
+			#{lockYn},
+			#{dormantYn},
+			#{membership},
+			CURRENT_TIMESTAMP
+		)
+	</insert>
+	<insert id="insertUserRole">
+	
+	<!--	SQL ID : JoinMapper.insertUserRole -->
+	    INSERT INTO TB_USER_ROLE (
+			USER_ID,
+			ROLE_CODE,
+			INSERT_DT
+		)
+	    VALUES (
+			#{userId},
+			#{roleCode},
+			CURRENT_TIMESTAMP
+		)
+	</insert>
+	<select id="checkUserId" parameterType="string" resultType="int">
+		<!--  SQL ID : JoinMapper.checkUserId -->
+		SELECT COUNT(USER_ID)
+		FROM TB_USER
+		WHERE USER_ID = #{userId}
+    </select>
+    
+</mapper>

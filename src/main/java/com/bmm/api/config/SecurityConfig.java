@@ -36,7 +36,10 @@ public class SecurityConfig {
 				                "/login/refreshToken",
 				                "/login/logOut",
 				                "/login/changeRole",
-				                "/user/keyword/getListKeyword"
+				                "/login/getUserMenu",
+				                "/user/keyword/getListKeyword",
+				                "/login/kakao/logIn",
+				                "/join/**"
 				           //     "/reviewPop/**",
 				               /* "/user/keyword/getListKeyword",*/
 			//	                "/login/**"

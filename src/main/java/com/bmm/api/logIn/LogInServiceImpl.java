@@ -29,5 +29,10 @@ public class LogInServiceImpl implements LogInService {
 		
 		return logInMapper.getUserMenu(roleCode);
 	}
+	@Override
+	public List<UserMenuDTO> getUserSubMenu(String roleCode) throws Exception{
+		
+		return logInMapper.getUserSubMenu(roleCode);
+	}
 	
 }

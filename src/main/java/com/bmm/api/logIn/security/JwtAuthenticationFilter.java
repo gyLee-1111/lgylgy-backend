@@ -31,10 +31,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 			// "/login/ongoing/refreshToken", // 여기에 제외할 경로 추가
 			// "/login/ongoing/ongoingLogInApi",
 			// "/login/ongoing/ongoingLogOut",
-			"/images/**", "/public/**", "/user/keyword/getListKeyword", "/public/category/getTopCategory",
+			"/images/**", "/user/keyword/getListKeyword", "/public/category/getTopCategory",
 			"/login/logInApi",
+			"/login/getUserMenu",
 			// "/login/refreshToken",
-			"/login/logOut"
+			"/login/logOut",
+			"/login/kakao/logInApi"
 	// ,"/reviewPop/**"
 //	                   "/login/**"
 	);

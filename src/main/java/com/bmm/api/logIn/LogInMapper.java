@@ -12,5 +12,7 @@ public interface LogInMapper {
 	public List<UserRoleDTO> getListUserRole(String userId);
 	
 	public List<UserMenuDTO> getUserMenu(String roleCode);
+	
+	public List<UserMenuDTO> getUserSubMenu(String roleCode);
 
 }

@@ -1,5 +1,7 @@
 package com.bmm.api.logIn;
 
+import java.util.List;
+
 public class UserMenuDTO {
 
 	private int menuCode;
@@ -13,6 +15,12 @@ public class UserMenuDTO {
 	private String roleNm;
 
 	private String roleGroup;
+	
+	private int parentCode;
+	
+	private String path;
+	
+	private List<UserMenuDTO> children;
 
 	public int getMenuCode() {
 		return menuCode;
@@ -60,6 +68,30 @@ public class UserMenuDTO {
 
 	public void setRoleGroup(String roleGroup) {
 		this.roleGroup = roleGroup;
+	}
+
+	public int getParentCode() {
+		return parentCode;
+	}
+
+	public void setParentCode(int parentCode) {
+		this.parentCode = parentCode;
+	}
+
+	public List<UserMenuDTO> getChildren() {
+		return children;
+	}
+
+	public void setChildren(List<UserMenuDTO> children) {
+		this.children = children;
+	}
+
+	public String getPath() {
+		return path;
+	}
+
+	public void setPath(String path) {
+		this.path = path;
 	}
 
 	

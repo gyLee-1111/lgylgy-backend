@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bmm.api.authLogIn.AuthLogInMapper">
+
+	<select id="getKakaoUser" parameterType="string" resultType="string">
+    
+   <!--  SQL ID : AuthLogInMapper.getOngoingUser -->
+        SELECT 
+			USER_ID
+		FROM TB_USER
+		WHERE USER_ID = #{id}
+    </select>
+	<insert id="insertUserKakao" parameterType="com.bmm.api.authLogIn.KakaoUserInfoDTO">
+	
+	<!--	SQL ID : AuthLogInMapper.insertUserKakao -->
+	    INSERT INTO TB_USER (
+			USER_ID,
+			USER_NM,
+			USER_NICKNM,
+			MEMBERSHIP,
+			INSERT_DT
+		)
+	    VALUES (
+			#{id},
+			#{nickname},
+			#{nickname},
+			#{membership},
+			CURRENT_TIMESTAMP
+		)
+	</insert>
+	<insert id="insertUserRole">
+	
+	<!--	SQL ID : AuthLogInMapper.insertUserRole -->
+	    INSERT INTO TB_USER_ROLE (
+			USER_ID,
+			ROLE_CODE,
+			INSERT_DT
+		)
+	    VALUES (
+			#{userId},
+			#{roleCode},
+			CURRENT_TIMESTAMP
+		)
+	</insert>
+	
+
+</mapper>
