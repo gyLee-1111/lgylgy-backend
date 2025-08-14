@@ -3,6 +3,7 @@ package com.bmm.api.authLogIn;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -14,8 +15,13 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+import ch.qos.logback.core.net.SyslogOutputStream;
+
 @Service
 public class KakaoLogInService {
+	
+	@Value("${my.vue.base-url}")
+	  private String vuebaseUrl;
 	
 	@Autowired
 	private AuthLogInMapper authLogInMapper;
@@ -24,7 +30,19 @@ public class KakaoLogInService {
 	
 	private final String clientId = "fe59b027894ddb6206595e9c8c0f113e";
 	
-	private final String redirectUrl = "http://localhost:5174/categoryList";
+	private final String redirectUrl = vuebaseUrl + "/oauth/callback/kakao";
+//	private final String redirectUrl;
+	
+
+	
+	/*
+	 * public KakaoLogInService(
+	 * 
+	 * @Value("${my.vue.base-url}") String vuebaseUrl, AuthLogInMapper authLogInMapper
+	 * ) { this.redirectUrl = vuebaseUrl + "/oauth/callback/kakao";
+	 * this.authLogInMapper = authLogInMapper; }
+	 */
+	
 	
 	public String getAccessToken(String code) {
 		String url = "https://kauth.kakao.com/oauth/token";
@@ -84,11 +102,11 @@ public class KakaoLogInService {
 	public void insertUserKakao(KakaoUserInfoDTO kakaoUserInfoDto) {
 		 authLogInMapper.insertUserKakao(kakaoUserInfoDto);
 		 
-		 authLogInMapper.insertUserRole(kakaoUserInfoDto.getId(), "USER_NOMAL");
+		 authLogInMapper.insertUserRole(kakaoUserInfoDto.getId(), "USER_NORMAL");
 	}
 	
 //	public void insertUserRole(String userId) {
-//		authLogInMapper.insertUserRole(userId, "USER_NOMAL");
+//		authLogInMapper.insertUserRole(userId, "USER_NORMAL");
 //	}
 	
 }

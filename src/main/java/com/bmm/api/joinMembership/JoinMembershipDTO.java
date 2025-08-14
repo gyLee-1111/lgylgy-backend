@@ -6,7 +6,7 @@ public class JoinMembershipDTO {
 	
 	private String email;
 	
-	private String nomalPassword;
+	private String normalPassword;
 	
 	private String userPassword;
 	
@@ -32,12 +32,12 @@ public class JoinMembershipDTO {
 		this.email = email;
 	}
 
-	public String getNomalPassword() {
-		return nomalPassword;
+	public String getNormalPassword() {
+		return normalPassword;
 	}
 
-	public void setNomalPassword(String nomalPassword) {
-		this.nomalPassword = nomalPassword;
+	public void setNormalPassword(String normalPassword) {
+		this.normalPassword = normalPassword;
 	}
 
 	public String getUserPassword() {

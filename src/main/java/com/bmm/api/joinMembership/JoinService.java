@@ -88,7 +88,7 @@ public class JoinService {
 	@Transactional
 	public void insertUser(JoinMembershipDTO joinMembershipDto) {
 
-		String password = joinMembershipDto.getNomalPassword();
+		String password = joinMembershipDto.getNormalPassword();
 		
 		String userPassword = BCrypt.hashpw(password, BCrypt.gensalt());
 		
@@ -103,7 +103,7 @@ public class JoinService {
 	//	System.out.println(joinMembershipDto.getUserId());
 		joinMapper.insertUser(joinMembershipDto);
 		
-		joinMapper.insertUserRole(joinMembershipDto.getEmail(),"USER_NOMAL");
+		joinMapper.insertUserRole(joinMembershipDto.getEmail(),"USER_NORMAL");
 	}
 	
 
