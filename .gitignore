@@ -31,3 +31,10 @@ build/
 
 ### VS Code ###
 .vscode/
+
+
+##############
+com.bmm.api.logIn.security/JwtFilter.java
+src/main/resources/application.properties
+src/main/resources/mybatis-config.xml
+src/test/java
