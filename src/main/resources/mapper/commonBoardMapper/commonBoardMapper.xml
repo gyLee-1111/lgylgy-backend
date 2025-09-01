@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bmm.api.commonBoard.CommonBoardMapper">
+
+	<select id="getDetailBoard" parameterType="string" resultType="com.bmm.api.commonBoard.commonBoardDTO.CommonBoardDTO">
+    
+   <!--  SQL ID : CommonBoardMapper.getDetailBoard -->
+        SELECT
+			BOARD_CODE,
+			BOARD_NM,
+			USE_ANSWER,
+	        USE_COMMENT,
+	        USE_NOTICE,
+	        USE_SECRET
+		FROM TB_COMMON_BOARD
+		WHERE BOARD_CODE = #{boardCode}
+		
+    </select>
+    <!--<select id="getDetailBoardrole" parameterType="string" resultType="com.bmm.api.commonBoard.CommonBoardDTO">
+		  SQL ID : CommonBoardMapper.getDetailBoardrole 
+		SELECT 
+			tbr.BOARD_CODE,
+			tbr.ROLE_CODE,
+			tbr.BOARDROLE_CODE,
+		FROM TB_BOARD_ROLE tbr
+		WHERE BOARD_CODE = #{boardCode}
+    </select>-->
+  	<select id="getListPost" parameterType="string" resultType="com.bmm.api.commonBoard.commonBoardDTO.CommonPostDTO">
+    
+   <!--  SQL ID : CommonBoardMapper.getListPost -->
+	WITH RECURSIVE POST_TREE AS (
+	        SELECT
+				tp.BOARD_CODE,
+				tp.POST_CODE,
+				tp.POST_NM,
+				tp.POST_INFO,
+				tp.NOTICE_CHECK,
+				tp.UPPER_CODE,
+				tp.DETHP,
+				tp.VIEW_COUNT,
+				tp.SECRET_CHECK,
+				tp.INSERT_USER_ID,
+				tp.INSERT_DT,
+				tp.COMMENT_CHECK,
+				tp.ANSWER_CHECK,
+				(SELECT COUNT(*) FROM TB_COMMENT tc WHERE tp.POST_CODE = tc.POST_CODE) AS COMMENT_CNT,
+				TO_CHAR(tp.POST_CODE, 'FM0000000000') AS PATH
+			FROM TB_POST tp
+			WHERE BOARD_CODE = #{boardCode}
+			AND UPPER_CODE = 0
+			
+			UNION ALL
+			SELECT
+		        p.BOARD_CODE,
+		        p.POST_CODE,
+		        p.POST_NM,
+		        p.POST_INFO,
+				p.NOTICE_CHECK,
+		        p.UPPER_CODE,
+		        p.DETHP,
+		        p.VIEW_COUNT,
+				p.SECRET_CHECK,
+		        p.INSERT_USER_ID,
+		        p.INSERT_DT,
+		        p.COMMENT_CHECK,
+				p.ANSWER_CHECK,
+				(SELECT COUNT(*) FROM TB_COMMENT tc WHERE p.POST_CODE = tc.POST_CODE) AS COMMENT_CNT,
+		        pt.PATH || '-' || TO_CHAR(p.POST_CODE, 'FM0000000000') AS PATH
+		    FROM TB_POST p
+		    JOIN POST_TREE pt ON p.UPPER_CODE = pt.POST_CODE
+			WHERE p.BOARD_CODE = #{boardCode}
+			)
+		SELECT *
+		FROM POST_TREE
+		ORDER BY PATH;
+		
+    </select>
+    <insert id="insertPost" parameterType="com.bmm.api.commonBoard.commonBoardDTO.CommonPostEntity">
+    <!--  SQL ID : CommonBoardMapper.insertPost -->
+		INSERT INTO TB_POST (
+			POST_CODE,
+		    BOARD_CODE,
+		    POST_NM,
+		    POST_INFO,
+		    NOTICE_CHECK,
+		    UPPER_CODE,
+		    DETHP,
+		    VIEW_COUNT,
+		    SECRET_CHECK,
+		    COMMENT_CHECK,
+		    ANSWER_CHECK,
+		    INSERT_USER_ID,
+		    INSERT_DT
+		) VALUES (
+		    #{postCode},
+		    #{boardCode},
+		    #{postNm},
+		    #{postInfo},
+		    #{noticeCheck},
+		    #{upperCode},
+		    #{dethp},
+		    #{viewCount},
+		    #{secretCheck},
+		    #{commentCheck},
+		    #{answerCheck},
+		    #{insertUserId},
+		    CURRENT_TIMESTAMP
+		)
+	</insert>
+	<select id="findpostCode" resultType="int">
+	    SELECT 
+	    MAX(
+			POST_CODE
+			)
+	    FROM TB_POST
+	</select>
+	<insert id="insertFile" parameterType="com.bmm.api.commonBoard.commonBoardDTO.BoardFileDTO">
+    <!--  SQL ID : CommonBoardMapper.insertFile -->
+		INSERT INTO TB_POST_FILE (
+			POST_CODE,
+		    SAVE_FILE_NM,
+		    FILE_NM,
+		    FILE_SIZE,
+		    INSERT_USER_ID,
+		    INSERT_DT
+		) VALUES (
+		    #{postCode},
+		    #{saveFileNm},
+		    #{fileNm},
+		    #{fileSize},
+		    #{userId},
+		    CURRENT_TIMESTAMP
+		)
+	</insert>
+	<select id="findFileNo" resultType="int">
+	    SELECT COALESCE
+	    (
+			MAX
+			(FILE_NO), 0
+			)
+	    FROM TB_POST_FILE
+	</select>
+	<select id="getDetailPost" parameterType="int" resultType="com.bmm.api.commonBoard.commonBoardDTO.CommonPostDTO">
+    <!--  SQL ID : CommonBoardMapper.getDetailPost -->
+        SELECT
+			POST_CODE,
+			BOARD_CODE,
+			POST_NM,
+	        POST_INFO,
+	        NOTICE_CHECK,
+	        UPPER_CODE,
+	        DETHP,
+	        VIEW_COUNT,
+	        COMMENT_CHECK,
+	        ANSWER_CHECK,
+	        INSERT_USER_ID,
+	        INSERT_DT
+		FROM TB_POST
+		WHERE POST_CODE = #{postCode}
+		
+    </select>
+    <select id="getDetailFile" parameterType="int" resultType="com.bmm.api.commonBoard.commonBoardDTO.BoardFileDTO">
+    <!--  SQL ID : CommonBoardMapper.getDetailFile -->
+        SELECT
+			POST_CODE,
+			FILE_NO,
+			SAVE_FILE_NM,
+			FILE_NM,
+	        FILE_SIZE
+		FROM TB_POST_FILE
+		WHERE POST_CODE = #{postCode}
+    </select>
+    <select id="fileDownload" parameterType="int" resultType="com.bmm.api.commonBoard.commonBoardDTO.FileDownloadDTO">
+    <!--  SQL ID : CommonBoardMapper.fileDownload -->
+        SELECT
+			FILE_NO,
+			SAVE_FILE_NM,
+			FILE_NM
+		FROM TB_POST_FILE
+		WHERE FILE_NO = #{fileNo}
+    </select>
+    <select id="getListComment" parameterType="int" resultType="com.bmm.api.commonBoard.commonBoardDTO.CommonCommentDTO">
+    
+	   <!--  SQL ID : CommonBoardMapper.getListComment -->
+	   WITH RECURSIVE COMMENT_TREE AS (
+	        SELECT
+				COMMENT_CODE,
+				POST_CODE,
+				COMMENT_CONTENT,
+				UPPER_CODE,
+				DETHP,
+				INSERT_USER_ID,
+				INSERT_DT,
+				TO_CHAR(COMMENT_CODE, 'FM0000000000') AS PATH
+			FROM TB_COMMENT
+			WHERE POST_CODE = #{postCode}
+			AND UPPER_CODE = 0
+			
+			UNION ALL
+			SELECT
+		        c.COMMENT_CODE,
+		        c.POST_CODE,
+		        c.COMMENT_CONTENT,
+		        c.UPPER_CODE,
+		        c.DETHP,
+		        c.INSERT_USER_ID,
+		        c.INSERT_DT,
+		        ct.PATH || '-' || TO_CHAR(c.COMMENT_CODE, 'FM0000000000') AS PATH
+		    FROM TB_COMMENT c
+		    JOIN COMMENT_TREE ct ON c.UPPER_CODE = ct.COMMENT_CODE
+			WHERE c.POST_CODE = #{postCode}
+			)
+		SELECT *
+		FROM COMMENT_TREE
+		ORDER BY PATH;
+		
+    </select>
+    <insert id="insertComment" parameterType="com.bmm.api.commonBoard.commonBoardDTO.CommonCommentDTO">
+    <!--  SQL ID : CommonBoardMapper.insertComment -->
+		INSERT INTO TB_COMMENT (
+		    POST_CODE,
+		    COMMENT_CONTENT,
+		    UPPER_CODE,
+		    DETHP,
+		    INSERT_USER_ID,
+		    INSERT_DT
+		) VALUES (
+		    #{postCode},
+		    #{commentContent},
+		    #{upperCode},
+		    #{dethp},
+		    #{userId},
+		    CURRENT_TIMESTAMP
+		)
+	</insert>
+	<select id="getComment" parameterType="int" resultType="com.bmm.api.commonBoard.commonBoardDTO.CommonCommentDTO">
+    
+   <!--  SQL ID : CommonBoardMapper.getComment -->
+        SELECT
+			POST_CODE,
+			COMMENT_CODE,
+			DETHP
+		FROM TB_COMMENT
+		WHERE COMMENT_CODE = #{commentCode}
+		
+    </select>
+	
+</mapper>

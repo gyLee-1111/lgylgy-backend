@@ -226,8 +226,6 @@ public class KeywordController {
 	    }
 		
 	    String status = keywordService.checkFavorite(searchKeywordDto);
-	    
-	    
 		
 		return ResponseEntity.ok(status);
 	}

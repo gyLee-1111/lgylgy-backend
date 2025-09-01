@@ -44,7 +44,8 @@
 		JOIN TB_ROLE tr ON tmr.ROLE_CODE = tr.ROLE_CODE
 		WHERE tr.ROLE_CODE = #{roleCode}
 		AND DEPTH = 1
-		
+		AND tum.USE_ADMIN = 'N'
+		ORDER BY tum.MENU_CODE
 	</select>
 	<select id="getUserSubMenu" parameterType="string" resultType="com.bmm.api.logIn.UserMenuDTO">
 	
@@ -70,6 +71,7 @@
 		JOIN TB_ROLE tr on tmr.ROLE_CODE = tr.ROLE_CODE
 		WHERE DEPTH = 1)
 		AND tr.ROLE_CODE = #{roleCode}
+		AND tum.USE_ADMIN = 'N'
 		ORDER BY tum.MENU_CODE
 		
 	</select>
