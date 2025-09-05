@@ -13,7 +13,7 @@ public class WebConfig implements WebMvcConfigurer {
 	        registry.addMapping("/**")
 		// registry.addMapping("/front/ongoing/**")
 	    //            .allowedOrigins("http://localhost:5174")
-	                .allowedOrigins("http://calm-stone-09e440100.1.azurestaticapps.net")
+	                .allowedOrigins("https://calm-stone-09e440100.1.azurestaticapps.net")
 	                .allowedMethods("*")
 	                .allowedHeaders("*")
 	                .exposedHeaders("Content-Disposition")
