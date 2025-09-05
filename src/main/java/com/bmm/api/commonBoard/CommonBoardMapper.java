@@ -16,7 +16,7 @@ public interface CommonBoardMapper {
 	
 	public CommonBoardDTO getDetailBoard(String boardCode);
 	
-	public List<CommonPostDTO> getListPost(String boardCode);
+	public List<CommonPostDTO> getListPost(CommonPostDTO commonPostDto);
 	
 	public void insertPost(CommonPostEntity commonPostEntity);
 	
@@ -39,6 +39,10 @@ public interface CommonBoardMapper {
 	public void insertReComment(CommonCommentDTO commonCommentDto);
 
 	public CommonCommentDTO getComment(int commentCode);
+
+	public int getCountPost(CommonPostDTO commonPostDto);
+
+	public List<CommonPostDTO> getListNoticePost(String boardCode);
 	
 	
 }

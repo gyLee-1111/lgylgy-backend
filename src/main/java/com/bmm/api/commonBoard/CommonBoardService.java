@@ -1,6 +1,5 @@
 package com.bmm.api.commonBoard;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
@@ -27,8 +26,8 @@ public class CommonBoardService {
 		return commonBoardMapper.getDetailBoard(boardCode);
 	}
 	
-	public List<CommonPostDTO> getListPost(String boardCode) {
-		return commonBoardMapper.getListPost(boardCode);
+	public List<CommonPostDTO> getListPost(CommonPostDTO commonPostDto) {
+		return commonBoardMapper.getListPost(commonPostDto);
 	}
 	/*
 	@Transactional
@@ -100,10 +99,12 @@ public class CommonBoardService {
 			if (!file.isEmpty()) {
 		//		int currentMaxFileNo = findFileNo();
 		//		int nextFileNo = currentMaxFileNo + 1;
-				String basePath = System.getProperty("user.dir") + "/src/main/resources/static/upload/board";
+				String uploadFolder = "upload/board";
+				String basePath = System.getProperty("user.dir") + "/src/main/resources/static/" + uploadFolder;
 				String savedName = DropzoneFileUpload.saveFile(file, basePath);
 				
-				String saveFileNm = basePath + File.separator + savedName;
+				String saveFileNm = savedName;
+
 				
 				BoardFileDTO boardFileDto = new BoardFileDTO();
 				boardFileDto.setFileNm(file.getOriginalFilename());
@@ -166,6 +167,16 @@ public class CommonBoardService {
 	}
 	public CommonCommentDTO getComment(int commentCode) {
 		return commonBoardMapper.getComment(commentCode);
+	}
+
+	public int getCountPost(CommonPostDTO commonPostDto) {
+
+		return commonBoardMapper.getCountPost(commonPostDto);
+	}
+
+	public List<CommonPostDTO> getListNoticePost(String boardCode) {
+		
+		return commonBoardMapper.getListNoticePost(boardCode);
 	}
 	
 	

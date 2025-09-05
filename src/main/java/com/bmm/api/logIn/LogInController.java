@@ -126,6 +126,8 @@ public class LogInController {
 			
 			responseDto.setUserId(userId);
 			responseDto.setToken(newAccessToken);
+			responseDto.setUserRoleList(userRoles);
+			responseDto.setCurrentRole(userRoles.get(0));
 			
 			return ResponseEntity.ok(responseDto);
 			

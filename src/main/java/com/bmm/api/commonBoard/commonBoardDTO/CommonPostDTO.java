@@ -31,6 +31,18 @@ public class CommonPostDTO {
 	private String answerCheck;
 	
 	private int commentCnt;
+	
+	private String searchType;
+	
+	private String searchValue;
+	
+	private int listView;
+	
+	private int page;
+	
+	private int totalCount;
+	
+	private int rseq;
 
 	public int getPostCode() {
 		return postCode;
@@ -142,6 +154,60 @@ public class CommonPostDTO {
 
 	public void setCommentCnt(int commentCnt) {
 		this.commentCnt = commentCnt;
+	}
+	
+	
+
+	public String getSearchType() {
+		return searchType;
+	}
+
+	public void setSearchType(String searchType) {
+		this.searchType = searchType;
+	}
+
+	public String getSearchValue() {
+		return searchValue;
+	}
+
+	public void setSearchValue(String searchValue) {
+		this.searchValue = searchValue;
+	}
+
+	public int getListView() {
+		return listView;
+	}
+
+	public void setListView(int listView) {
+		this.listView = listView;
+	}
+
+	public int getPage() {
+		return page;
+	}
+
+	public void setPage(int page) {
+		this.page = page;
+	}
+
+	
+	
+	public int getTotalCount() {
+		return totalCount;
+	}
+
+	public void setTotalCount(int totalCount) {
+		this.totalCount = totalCount;
+	}
+	
+	
+
+	public int getRseq() {
+		return rseq;
+	}
+
+	public void setRseq(int rseq) {
+		this.rseq = rseq;
 	}
 
 	public CommonPostEntity toEntity() {

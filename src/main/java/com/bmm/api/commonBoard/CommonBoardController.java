@@ -29,6 +29,7 @@ import com.bmm.api.commonBoard.commonBoardDTO.CommonCommentResponseDTO;
 import com.bmm.api.commonBoard.commonBoardDTO.CommonPostDTO;
 import com.bmm.api.commonBoard.commonBoardDTO.FileDownloadDTO;
 import com.bmm.api.commonBoard.commonBoardDTO.PostDetailResponseDTO;
+import com.bmm.api.commonBoard.commonBoardDTO.PostResponseDTO;
 
 @RestController
 @RequestMapping("user/board")
@@ -47,8 +48,24 @@ public class CommonBoardController {
 		return ResponseEntity.ok(result);
 	    	
 	}
-	
-	
+	@PostMapping("/getListPost")
+	public ResponseEntity<PostResponseDTO> getListPost(@RequestBody CommonPostDTO commonPostDto) throws Exception {
+		
+		System.out.println("받은 boardCode: " + commonPostDto.getBoardCode());
+		PostResponseDTO postResponseDto = new PostResponseDTO();
+		
+		postResponseDto.setTotalCount(commonBoardService.getCountPost(commonPostDto));
+		System.out.println("토탈 숫자" + commonPostDto.getTotalCount());
+	//	System.out.println(System.getProperty("user.dir"));
+		List<CommonPostDTO> list = commonBoardService.getListPost(commonPostDto);
+		
+		
+		postResponseDto.setCommonPostDto(list);
+		
+		
+		return ResponseEntity.ok(postResponseDto);
+	}
+	/*
 	@GetMapping("/getListPost")
 	public ResponseEntity<List<CommonPostDTO>> getListPost(@RequestParam String boardCode) throws Exception {
 		
@@ -58,6 +75,7 @@ public class CommonBoardController {
 		
 		return ResponseEntity.ok(list);
 	}
+	*/
 	/*
 	@PostMapping("/insertPost")
 	public ResponseEntity<?> insertPost(@RequestPart("post") CommonPostDTO commonPostDto,
@@ -133,7 +151,7 @@ public class CommonBoardController {
 		//System.out.println("asdsadadsadasdasd"+((BoardFileDTO) fileResult).getPostCode());
 		response.setCommonPostDto(result);
 		response.setBoardFileDto(fileResult);
-		System.out.println("asdsadadsadasdasd"+response.getBoardFileDto());
+	//	System.out.println("asdsadadsadasdasd"+response.getBoardFileDto());
 		return ResponseEntity.ok(response);
 	}
 	
@@ -144,16 +162,15 @@ public class CommonBoardController {
 		CommonPostDTO result = commonBoardService.getDetailPost(postCode);
 		if (result.getUpperCode() != 0) {
 		
-		result = commonBoardService.getDetailPost(result.getUpperCode());
-		
 		List<BoardFileDTO> fileResult = commonBoardService.getDetailFile(result.getUpperCode());
+		result = commonBoardService.getDetailPost(result.getUpperCode());
 		
 		PostDetailResponseDTO response = new PostDetailResponseDTO();
 		
 		//System.out.println("asdsadadsadasdasd"+((BoardFileDTO) fileResult).getPostCode());
 		response.setCommonPostDto(result);
 		response.setBoardFileDto(fileResult);
-		System.out.println("asdsadadsadasdasd"+response.getBoardFileDto());
+		
 		return ResponseEntity.ok(response);
 		} else {
 			return ResponseEntity.notFound().build();
@@ -165,18 +182,24 @@ public class CommonBoardController {
 	@GetMapping("/fileDownload")
 	public ResponseEntity<Resource> fileDownload(@RequestParam int fileNo) throws IOException {
 		
+		String uploadFolder = "upload/board/";
+	    String basePath = System.getProperty("user.dir") + "/src/main/resources/static/" + uploadFolder;
+		
 		FileDownloadDTO fileDownloadDto = commonBoardService.fileDownload(fileNo);
 		
-		Resource resource = new FileSystemResource(fileDownloadDto.getSaveFileNm());
+		Resource resource = new FileSystemResource(basePath + fileDownloadDto.getSaveFileNm());
 		String encodedFileName = UriUtils.encode(fileDownloadDto.getFileNm(), StandardCharsets.UTF_8);
 		
 		HttpHeaders headers = new HttpHeaders();
 	    headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + encodedFileName + "\"");
-		
-	    String contentType = Files.probeContentType(Paths.get(fileDownloadDto.getSaveFileNm()));
+	    System.out.println("File path: " + basePath + fileDownloadDto.getSaveFileNm());
+	    System.out.println("Content-Disposition: attachment; filename=\"" + encodedFileName + "\"; filename*=UTF-8''" + encodedFileName);
+	    
+	    String contentType = Files.probeContentType(Paths.get(basePath + fileDownloadDto.getSaveFileNm()));
 	    if (contentType == null) {
 	        contentType = "application/octet-stream";
 	    }
+	    System.out.println("Content-Type: " + contentType);
 	    
 	    headers.add(HttpHeaders.CONTENT_TYPE, contentType);
 	    
@@ -232,4 +255,11 @@ public class CommonBoardController {
                     .body("리플 등록 실패입니다.");
 		}
 	}
+	@GetMapping("/getListNoticePost")
+	public ResponseEntity<List<CommonPostDTO>> getListNoticePost(@RequestParam String boardCode) throws Exception {
+		List<CommonPostDTO> list = commonBoardService.getListNoticePost(boardCode);
+		
+		return ResponseEntity.ok(list);
+	}
+	
 }

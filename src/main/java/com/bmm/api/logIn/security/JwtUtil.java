@@ -47,6 +47,7 @@ public class JwtUtil {
     public String generateRefreshToken(String userId) {
         Claims claims = Jwts.claims().setSubject(userId);
         claims.put("userId", userId);
+        
 
         return Jwts.builder()
                 .setClaims(claims)
