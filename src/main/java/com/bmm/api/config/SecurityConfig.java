@@ -63,7 +63,7 @@ public class SecurityConfig {
 	public CorsConfigurationSource corsConfigurationSource() {
 		CorsConfiguration config = new CorsConfiguration();
 	//	config.setAllowedOrigins(List.of("http://localhost:5174"));  // 🔧 프론트 주소
-		config.setAllowedOrigins(List.of("https://calm-stone-09e440100.1.azurestaticapps.net"));
+		config.setAllowedOrigins(List.of("https://calm-stone-09e440100.1.azurestaticapps.net","http://calm-stone-09e440100.1.azurestaticapps.net"));
 		config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
 		config.setAllowedHeaders(List.of("*"));
 		config.setExposedHeaders(List.of("Content-Disposition"));
