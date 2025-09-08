@@ -44,7 +44,89 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	private boolean isExcludePath(String path) {
 		return EXCLUDE_URLS.stream().anyMatch(pattern -> pathMatcher.match(pattern, path));
 	}
-
+/*
+	@Override
+	protected void doFilterInternal(HttpServletRequest request,
+									HttpServletResponse response,
+									FilterChain filterChain) throws ServletException, IOException {
+		// CORS 응답 헤더 설정
+        response.setHeader("Access-Control-Allow-Origin", "http://localhost:5174");
+//		String origin = request.getHeader("Origin");
+//		if (origin != null && (origin.equals("https://calm-stone-09e440100.1.azurestaticapps.net") || origin.equals("http://localhost:5174"))) {
+//		    response.setHeader("Access-Control-Allow-Origin", origin);
+//		}
+        response.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+        response.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+        response.setHeader("Access-Control-Allow-Credentials", "true");
+        // OPTIONS 요청이면 여기서 끝냄 (200 OK)
+        if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
+        	System.out.println("options return");
+            response.setStatus(HttpServletResponse.SC_OK);
+            return;
+        }
+        String path = request.getRequestURI();
+        System.out.println("url : "+ path);
+        
+		/*
+		 * if (isExcludePath(path)) { System.out.println("화이트 리스트 ");
+		 * filterChain.doFilter(request, response); return; }
+		 */
+/*
+		String authHeader = request.getHeader("Authorization"); 
+		System.out.println("token : " + authHeader);
+		
+		if (authHeader != null && authHeader.startsWith("Bearer ") ) {
+			System.out.println(111);
+			String token = authHeader.substring(7);
+			System.out.println("토큰검사전 1");
+			if(jwtUtil.validateToken(token)) {
+				try {
+					System.out.println("토큰검사전 2");
+					LogInTokenInfo tokenInfo = jwtUtil.tokenInfoToToken(token);
+					
+					if (tokenInfo == null) {
+						response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token expired or invalid");
+					    return;
+					}
+					
+					String roleCode = tokenInfo.getRole().getRoleCode();
+					//현재 권한으로 수정
+					//List<GrantedAuthority> authorities = tokenInfo.getRoles().stream()
+					//		.map(role -> new SimpleGrantedAuthority(role))
+					//		.collect(Collectors.toList());
+					GrantedAuthority authority = new SimpleGrantedAuthority(roleCode);
+					UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(tokenInfo.getUserId(), null,  List.of(authority));
+					SecurityContextHolder.getContext().setAuthentication(authentication);
+					System.out.println("시큐리티 생성");
+					request.setAttribute("tokenInfo", tokenInfo);
+					
+					//filterChain.doFilter(request, response);
+	                //return;
+					
+				} catch(Exception e) {
+					System.err.println(e.getMessage());
+					response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid Token");
+				//	((HttpServletResponse) response).sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid Token");
+					
+				}
+			} 
+	    }
+		
+		filterChain.doFilter(request, response);
+		return;
+				
+					/*
+					 * if (isExcludePath(path)) { System.out.println("화이트 리스트 ");
+					 * filterChain.doFilter(request, response); // 필터 건너뜀 return; }
+					 * System.out.println("화이트 리스트 x");
+					 */
+//  Access Token이 없으면 401
+	//response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Access Token is missing");
+	
+ //   return;
+//	}
+	
+	
 	@Override
 	protected void doFilterInternal(HttpServletRequest request,
 									HttpServletResponse response,
@@ -66,30 +148,32 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
         String path = request.getRequestURI();
         System.out.println("url : "+ path);
-
         
 		/*
 		 * if (isExcludePath(path)) { System.out.println("화이트 리스트 ");
 		 * filterChain.doFilter(request, response); return; }
 		 */
-		 
-        
-        
-		String authHeader = request.getHeader("Authorization"); 
+	   
+        String authHeader = request.getHeader("Authorization"); 
 		System.out.println("token : " + authHeader);
-		
-		
 		
 		if (authHeader != null && authHeader.startsWith("Bearer ") ) {
 			System.out.println(111);
 			String token = authHeader.substring(7);
 			System.out.println("토큰검사전 1");
-			if(jwtUtil.validateToken(token)) {
+			
 				try {
 					System.out.println("토큰검사전 2");
 					LogInTokenInfo tokenInfo = jwtUtil.tokenInfoToToken(token);
+					
+					if (tokenInfo == null) {
+						SecurityContextHolder.clearContext(); //인증컨텍스트 클리어 스프링 시큐리티는 인증 정보를 SecurityContextHolder에 저장함 문제가 생겼으면 반드시 클리어해야, 이후 요청에도 인증 정보가 안 남음
+						response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token expired or invalid");
+					    return;
+					}
+					
 					String roleCode = tokenInfo.getRole().getRoleCode();
-					///현재 권한으로 수정
+					//현재 권한으로 수정
 					//List<GrantedAuthority> authorities = tokenInfo.getRoles().stream()
 					//		.map(role -> new SimpleGrantedAuthority(role))
 					//		.collect(Collectors.toList());
@@ -102,17 +186,22 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 					//filterChain.doFilter(request, response);
 	                //return;
 					
-				} catch(Exception e) {
+				} catch(io.jsonwebtoken.ExpiredJwtException e) {
+					SecurityContextHolder.clearContext();
 					System.err.println(e.getMessage());
-					response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid Token");
+					response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Access token expired");
 				//	((HttpServletResponse) response).sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid Token");
-					
-				}
+					return;
+				}catch (Exception e) {
+					SecurityContextHolder.clearContext();
+	                System.out.println("토큰 파싱 실패: " + e.getMessage());
+	                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid token");
+	                return;
+	            }
 			} 
-	      }
 		
 		filterChain.doFilter(request, response);
-		return;
+		
 				
 					/*
 					 * if (isExcludePath(path)) { System.out.println("화이트 리스트 ");

@@ -12,7 +12,7 @@ public class WebConfig implements WebMvcConfigurer {
 	 public void addCorsMappings(CorsRegistry registry) {
 	        registry.addMapping("/**")
 		// registry.addMapping("/front/ongoing/**")
-	    //            .allowedOrigins("http://localhost:5174")
+	   //             .allowedOrigins("http://localhost:5174")
 	                .allowedOrigins("https://calm-stone-09e440100.1.azurestaticapps.net","http://calm-stone-09e440100.1.azurestaticapps.net")
 	                .allowedMethods("*")
 	                .allowedHeaders("*")

@@ -47,7 +47,6 @@ public class JwtUtil {
     public String generateRefreshToken(String userId) {
         Claims claims = Jwts.claims().setSubject(userId);
         claims.put("userId", userId);
-        
 
         return Jwts.builder()
                 .setClaims(claims)
@@ -56,7 +55,6 @@ public class JwtUtil {
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }
-	
     
 	public LogInTokenInfo tokenInfoToToken(String token) throws Exception {
 		try {
@@ -65,11 +63,9 @@ public class JwtUtil {
 					.build()
 					.parseClaimsJws(token)
 					.getBody();
-			
 	
 			LogInTokenInfo logInTokenInfo = new LogInTokenInfo();
 			logInTokenInfo.setUserId((String)claims.get("userId"));
-			
 			
 			Object roleObject = claims.get("role");
 			if(roleObject != null) {

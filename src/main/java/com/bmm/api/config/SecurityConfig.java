@@ -15,6 +15,8 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import com.bmm.api.logIn.security.JwtAuthenticationFilter;
 import com.bmm.api.logIn.security.JwtUtil;
 
+import jakarta.servlet.http.HttpServletResponse;
+
 @Configuration
 public class SecurityConfig {
 
@@ -23,7 +25,42 @@ public class SecurityConfig {
 	public SecurityConfig(JwtUtil jwtUtil) {
 		this.jwtUtil = jwtUtil;
 	}
+/*
+	@Bean
+	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+		JwtAuthenticationFilter jwtFilter = new JwtAuthenticationFilter(jwtUtil);
 
+		return http
+				.cors(cors -> cors.configurationSource(corsConfigurationSource()))
+				.csrf(csrf -> csrf.disable())
+				.sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+				.authorizeHttpRequests(
+						auth -> auth
+						.requestMatchers(
+								"/test/getTest",
+								"/images/**",
+							    "/public/**", 
+				                "/login/logInApi",
+				                "/login/refreshToken",
+				                "/login/logOut",
+				                "/login/changeRole",
+				                "/login/getUserMenu",
+				                "/user/keyword/getListKeyword",
+				                "/login/kakao/logIn",
+				                "/join/**"
+				           //     "/reviewPop/**",
+				               /* "/user/keyword/getListKeyword",*/
+			//	                "/login/**"
+						//권한에 맞춰서 /admin/user/public url 주소 맞추기
+	/*						)
+						.permitAll()
+						.anyRequest()
+						.authenticated())
+				
+				.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+				.build();
+	}
+*/
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		JwtAuthenticationFilter jwtFilter = new JwtAuthenticationFilter(jwtUtil);
@@ -54,10 +91,22 @@ public class SecurityConfig {
 						.permitAll()
 						.anyRequest()
 						.authenticated())
+				//HttpSecurity 설정에서 예외 상황 처리 방법을 설정하는 메소드
+				.exceptionHandling(ex -> ex
+						//인증이 안되었을때 응답을 설정하는 부분
+			            .authenticationEntryPoint((request, response, authException) -> {
+			            	//HTTP 상태코드 401을 클라이언트에게 보내는 코드
+			                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
+			            })
+			            //인증은 되었는데, **권한이 부족한 경우(예: 관리자 권한 필요한데 일반 유저인 경우)**에 실행되는 핸들러
+			            .accessDeniedHandler((request, response, accessDeniedException) -> {
+			                response.sendError(HttpServletResponse.SC_FORBIDDEN, "Forbidden");
+			            })
+			        )
 				.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
 				.build();
 	}
-		
+
 		//permitAll 걍 넘어감
 	@Bean
 	public CorsConfigurationSource corsConfigurationSource() {
@@ -73,12 +122,10 @@ public class SecurityConfig {
 		source.registerCorsConfiguration("/**", config);
 		return source;
 	}
-}	
-		
-		
-		
-		
-		
+}
+
+
+
 	
 /*
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
