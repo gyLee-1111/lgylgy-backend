@@ -52,7 +52,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 		// CORS 응답 헤더 설정
        // response.setHeader("Access-Control-Allow-Origin", "http://localhost:5174");
 		String origin = request.getHeader("Origin");
-		if (origin != null && (origin.equals("http://calm-stone-09e440100.1.azurestaticapps.net") || origin.equals("http://localhost:5174"))) {
+		if (origin != null && (origin.equals("https://calm-stone-09e440100.1.azurestaticapps.net") || origin.equals("http://localhost:5174"))) {
 		    response.setHeader("Access-Control-Allow-Origin", origin);
 		}
         response.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
