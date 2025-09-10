@@ -75,6 +75,29 @@
 			CURRENT_TIMESTAMP
 		)
 	</insert>
+	<update  id="updateUser" parameterType="com.bmm.api.joinMembership.JoinMembershipDTO">
+    <!--  SQL ID : JoinMapper.updateUser -->
+	    UPDATE TB_USER
+	    SET
+	        USER_PASSWORD = #{userPassword},
+	        USER_NM = #{userNm},
+			USER_NICKNM = #{userNm},
+	        USER_GENDER = #{userGender},
+	        USER_BIRTH = #{userBirth},
+	        PHONE_NUMBER = #{phoneNumber}
+		WHERE USER_ID = #{userId}
+	</update>
+	<update  id="updateUserNotPass" parameterType="com.bmm.api.joinMembership.JoinMembershipDTO">
+    <!--  SQL ID : JoinMapper.updateUserNotPass -->
+	    UPDATE TB_USER
+	    SET
+	        USER_NM = #{userNm},
+			USER_NICKNM = #{userNm},
+	        USER_GENDER = #{userGender},
+	        USER_BIRTH = #{userBirth},
+	        PHONE_NUMBER = #{phoneNumber}
+		WHERE USER_ID = #{userId}
+	</update>
 	<select id="checkUserId" parameterType="string" resultType="int">
 		<!--  SQL ID : JoinMapper.checkUserId -->
 		SELECT COUNT(USER_ID)

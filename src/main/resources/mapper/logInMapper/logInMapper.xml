@@ -75,6 +75,21 @@
 		ORDER BY tum.MENU_CODE
 		
 	</select>
+	
+	 <select id="getUserInfo" parameterType="string" resultType="com.bmm.api.logIn.UserInfoDTO">
+    
+   		<!--  SQL ID : LogInMapper.getUserInfo -->
+        SELECT 
+			USER_ID,
+			USER_PASSWORD,
+			USER_NM,
+			PHONE_NUMBER,
+			USER_BIRTH,
+			USER_GENDER,
+			MEMBERSHIP
+		FROM TB_USER
+		WHERE USER_ID = #{userId}
+    </select>
 
 
 </mapper>

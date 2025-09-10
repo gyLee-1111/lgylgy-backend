@@ -179,7 +179,6 @@ public class CommonBoardService {
 		return commonBoardMapper.getListNoticePost(boardCode);
 	}
 	
-	
-	
 
+	
 }

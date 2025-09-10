@@ -17,4 +17,8 @@ public interface JoinMapper {
 	public void insertUserRole(@Param("userId") String userId, @Param("roleCode") String roleCode);
 	
 	public int checkUserId(String userId);
+
+	public void updateUser(JoinMembershipDTO joinMembershipDto);
+
+	public void updateUserNotPass(JoinMembershipDTO joinMembershipDto);
 }

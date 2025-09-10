@@ -52,4 +52,19 @@ public class JoinController {
 		
 		return ResponseEntity.ok("가입완료");
 	}
+	
+	@PostMapping("/updateUser")
+    public ResponseEntity<?> updateUser(@RequestBody JoinMembershipDTO joinMembershipDto) {
+		
+		joinService.updateUser(joinMembershipDto);
+		
+		return ResponseEntity.ok("수정완료");
+	}
+	@PostMapping("/updateUserNotPass")
+    public ResponseEntity<?> updateUserNotPass(@RequestBody JoinMembershipDTO joinMembershipDto) {
+		
+		joinService.updateUserNotPass(joinMembershipDto);
+		
+		return ResponseEntity.ok("수정완료");
+	}
 }

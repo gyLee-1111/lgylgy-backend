@@ -11,4 +11,7 @@ public interface LogInService {
 	public List<UserMenuDTO> getUserMenu(String roleCode) throws Exception;
 	
 	public List<UserMenuDTO> getUserSubMenu(String roleCode) throws Exception;
+	
+	public UserInfoDTO getUserInfo(String userId) throws Exception;
+	
 }

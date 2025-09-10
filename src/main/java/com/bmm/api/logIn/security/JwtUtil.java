@@ -24,7 +24,7 @@ public class JwtUtil {
 	
 	private final long accessTokenExpirationMs = 1000 * 60 * 60; // 1시간
 	//리프레시 토큰
-	private final long refreshTokenExpirationMs = 1000L * 60 * 60 * 6; //3시간
+	private final long refreshTokenExpirationMs = 1000L * 60 * 60 * 3; //3시간
 	
 //jwt 서명에 쓸 key 객채화
 	private final Key key = Keys.hmacShaKeyFor(secret.getBytes());
@@ -45,6 +45,8 @@ public class JwtUtil {
     }
 	
     public String generateRefreshToken(String userId) {
+    	
+    	System.out.println("refresh" + userId);
         Claims claims = Jwts.claims().setSubject(userId);
         claims.put("userId", userId);
 
@@ -57,7 +59,7 @@ public class JwtUtil {
     }
     
 	public LogInTokenInfo tokenInfoToToken(String token) throws Exception {
-		try {
+		/* try { */
 			Claims claims = Jwts.parserBuilder()
 					.setSigningKey(key)
 					.build()
@@ -75,13 +77,13 @@ public class JwtUtil {
 				System.out.println("role Null");
 			}
 	        return logInTokenInfo;
-		} catch (ExpiredJwtException e) {
+		/*} catch (ExpiredJwtException e) {
 			System.out.println("❗ JWT 만료: " + e.getMessage());
 	        return null;
 		} catch (Exception e) {
 	        System.out.println("❗ JWT 파싱 실패: " + e.getMessage());
 	        return null;
-	    }
+	    }*/
 	}
 	  
 	public boolean validateToken(String token) {

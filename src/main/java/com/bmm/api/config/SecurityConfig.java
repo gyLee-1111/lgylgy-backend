@@ -52,7 +52,7 @@ public class SecurityConfig {
 				               /* "/user/keyword/getListKeyword",*/
 			//	                "/login/**"
 						//권한에 맞춰서 /admin/user/public url 주소 맞추기
-	/*						)
+/*							)
 						.permitAll()
 						.anyRequest()
 						.authenticated())
@@ -61,6 +61,7 @@ public class SecurityConfig {
 				.build();
 	}
 */
+	
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		JwtAuthenticationFilter jwtFilter = new JwtAuthenticationFilter(jwtUtil);
@@ -99,9 +100,9 @@ public class SecurityConfig {
 			                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
 			            })
 			            //인증은 되었는데, **권한이 부족한 경우(예: 관리자 권한 필요한데 일반 유저인 경우)**에 실행되는 핸들러
-			            .accessDeniedHandler((request, response, accessDeniedException) -> {
-			                response.sendError(HttpServletResponse.SC_FORBIDDEN, "Forbidden");
-			            })
+//			            .accessDeniedHandler((request, response, accessDeniedException) -> {
+//			                response.sendError(HttpServletResponse.SC_FORBIDDEN, "Forbidden");
+//			            })
 			        )
 				.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
 				.build();

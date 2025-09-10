@@ -105,6 +105,20 @@ public class JoinService {
 		
 		joinMapper.insertUserRole(joinMembershipDto.getEmail(),"USER_NORMAL");
 	}
+	public void updateUser(JoinMembershipDTO joinMembershipDto) {
+		String password = joinMembershipDto.getNormalPassword();
+		
+		String userPassword = BCrypt.hashpw(password, BCrypt.gensalt());
+		
+		joinMembershipDto.setUserPassword(userPassword);
+		
+		joinMapper.updateUser(joinMembershipDto);
+		
+	}
+	public void updateUserNotPass(JoinMembershipDTO joinMembershipDto) {
+		joinMapper.updateUserNotPass(joinMembershipDto);
+		
+	}
 	
 
 }

@@ -1,16 +1,14 @@
-package com.bmm.api.joinMembership;
+package com.bmm.api.logIn;
 
 import java.time.LocalDate;
 
-public class JoinMembershipDTO {
-	
-	private String email;
+public class UserInfoDTO {
 	
 	private String userId;
 	
-	private String normalPassword;
-	
 	private String userPassword;
+	
+	private String normalPassword;
 	
 	private String userNm;
 	
@@ -20,19 +18,7 @@ public class JoinMembershipDTO {
 	
 	private String userGender;
 	
-	private String lockYn;
-	
-	private String dormantYn;
-	
 	private String membership;
-
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
-	}
 
 	public String getUserId() {
 		return userId;
@@ -42,20 +28,20 @@ public class JoinMembershipDTO {
 		this.userId = userId;
 	}
 
-	public String getNormalPassword() {
-		return normalPassword;
-	}
-
-	public void setNormalPassword(String normalPassword) {
-		this.normalPassword = normalPassword;
-	}
-
 	public String getUserPassword() {
 		return userPassword;
 	}
 
 	public void setUserPassword(String userPassword) {
 		this.userPassword = userPassword;
+	}
+
+	public String getNormalPassword() {
+		return normalPassword;
+	}
+
+	public void setNormalPassword(String normalPassword) {
+		this.normalPassword = normalPassword;
 	}
 
 	public String getUserNm() {
@@ -90,22 +76,6 @@ public class JoinMembershipDTO {
 		this.userGender = userGender;
 	}
 
-	public String getLockYn() {
-		return lockYn;
-	}
-
-	public void setLockYn(String lockYn) {
-		this.lockYn = lockYn;
-	}
-
-	public String getDormantYn() {
-		return dormantYn;
-	}
-
-	public void setDormantYn(String dormantYn) {
-		this.dormantYn = dormantYn;
-	}
-
 	public String getMembership() {
 		return membership;
 	}
@@ -113,8 +83,6 @@ public class JoinMembershipDTO {
 	public void setMembership(String membership) {
 		this.membership = membership;
 	}
-
-	
     
 
 }

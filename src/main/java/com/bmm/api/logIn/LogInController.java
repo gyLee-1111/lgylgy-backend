@@ -6,15 +6,19 @@ import java.util.List;
 
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.bmm.api.commonBoard.commonBoardDTO.CommonBoardDTO;
+import com.bmm.api.commonBoard.commonBoardDTO.CommonPostDTO;
 import com.bmm.api.logIn.security.JwtUtil;
 
 import jakarta.servlet.http.Cookie;
@@ -237,6 +241,22 @@ public class LogInController {
 		return ResponseEntity.ok(list);
 	}
 	
+	@PostMapping("/getUserInfo")
+	public ResponseEntity<?> getUserInfo(Authentication authentication) {
+		try {
+			
+			String saveUserId = (String)authentication.getPrincipal();
+			System.out.println("12321312312312312" + saveUserId);
+			UserInfoDTO userInfoDto = logInService.getUserInfo(saveUserId);
+			
+			return ResponseEntity.ok(userInfoDto);
+	
+		} catch(Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("유저정보 조회 실패입니다.");
+		}
+	}
     
 
 }

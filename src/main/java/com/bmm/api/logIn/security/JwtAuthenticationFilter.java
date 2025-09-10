@@ -186,6 +186,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 					//filterChain.doFilter(request, response);
 	                //return;
 					
+					//이 블록은 JWT 토큰이 만료된 경우 에 실행.io.jsonwebtoken 라이브러리는 만료된 토큰을 파싱하려고 하면 ExpiredJwtException을 던짐
 				} catch(io.jsonwebtoken.ExpiredJwtException e) {
 					SecurityContextHolder.clearContext();
 					System.err.println(e.getMessage());
