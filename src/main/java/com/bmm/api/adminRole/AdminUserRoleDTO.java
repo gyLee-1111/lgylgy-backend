@@ -1,4 +1,4 @@
-package com.bmm.api.adminMain;
+package com.bmm.api.adminRole;
 
 public class AdminUserRoleDTO {
 	

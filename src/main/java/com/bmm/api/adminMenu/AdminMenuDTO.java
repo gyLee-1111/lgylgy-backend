@@ -1,8 +1,8 @@
-package com.bmm.api.logIn;
+package com.bmm.api.adminMenu;
 
 import java.util.List;
 
-public class UserMenuDTO {
+public class AdminMenuDTO {
 
 	private int menuCode;
 
@@ -14,16 +14,23 @@ public class UserMenuDTO {
 	
 	private String roleNm;
 
-	private String roleGroup;
-	
 	private int parentCode;
+	
+	private String menuType;
+	
+	private String menuTypeNm;
+	
+	private String useYn;
 	
 	private String path;
 	
-	private String useRole;
+	private int sortOrder;
 	
-	private List<UserMenuDTO> children;
-
+	private String parentNm;
+	
+	private List<AdminMenuDTO> children;
+	
+	
 	public int getMenuCode() {
 		return menuCode;
 	}
@@ -64,13 +71,6 @@ public class UserMenuDTO {
 		this.roleNm = roleNm;
 	}
 
-	public String getRoleGroup() {
-		return roleGroup;
-	}
-
-	public void setRoleGroup(String roleGroup) {
-		this.roleGroup = roleGroup;
-	}
 
 	public int getParentCode() {
 		return parentCode;
@@ -80,12 +80,37 @@ public class UserMenuDTO {
 		this.parentCode = parentCode;
 	}
 
-	public List<UserMenuDTO> getChildren() {
+	public String getMenuType() {
+		return menuType;
+	}
+
+	public void setMenuType(String menuType) {
+		this.menuType = menuType;
+	}
+
+	public String getMenuTypeNm() {
+		return menuTypeNm;
+	}
+
+	public void setMenuTypeNm(String menuTypeNm) {
+		this.menuTypeNm = menuTypeNm;
+	}
+
+	public List<AdminMenuDTO> getChildren() {
 		return children;
 	}
 
-	public void setChildren(List<UserMenuDTO> children) {
+	public void setChildren(List<AdminMenuDTO> children) {
 		this.children = children;
+	}
+	
+
+	public String getUseYn() {
+		return useYn;
+	}
+
+	public void setUseYn(String useYn) {
+		this.useYn = useYn;
 	}
 
 	public String getPath() {
@@ -96,14 +121,22 @@ public class UserMenuDTO {
 		this.path = path;
 	}
 
-	public String getUseRole() {
-		return useRole;
+	public int getSortOrder() {
+		return sortOrder;
 	}
 
-	public void setUseRole(String useRole) {
-		this.useRole = useRole;
+	public void setSortOrder(int sortOrder) {
+		this.sortOrder = sortOrder;
 	}
 
-	
+	public String getParentNm() {
+		return parentNm;
+	}
+
+	public void setParentNm(String parentNm) {
+		this.parentNm = parentNm;
+	}
+
+
 	
 }

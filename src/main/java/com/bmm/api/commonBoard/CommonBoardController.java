@@ -3,6 +3,7 @@ package com.bmm.api.commonBoard;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
@@ -143,7 +144,11 @@ public class CommonBoardController {
 	public ResponseEntity<PostDetailResponseDTO> getDetailPost(@RequestParam int postCode) throws Exception {
 		System.out.println("게시물코드"+postCode);
 		
+		commonBoardService.updateViewCount(postCode);
+		
 		CommonPostDTO result = commonBoardService.getDetailPost(postCode);
+		
+		
 		List<BoardFileDTO> fileResult = commonBoardService.getDetailFile(postCode);
 		
 		PostDetailResponseDTO response = new PostDetailResponseDTO();
@@ -261,5 +266,97 @@ public class CommonBoardController {
 		
 		return ResponseEntity.ok(list);
 	}
+	@PostMapping("/updatePost")
+	public ResponseEntity<?> updatePost(@RequestBody CommonPostDTO request) {
+		
+		try {
+			System.out.println("asd");
+			commonBoardService.updatePost(request);
+			return ResponseEntity.ok(request.getPostCode());
+		} catch(Exception e) {
+			 e.printStackTrace();
+			 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                     .body("매뉴 수정 실패입니다.");
+		}
 	
+	}
+	@PostMapping("/fileDelete")
+	public ResponseEntity<String> fileDelete(@RequestBody BoardFileDTO boardFileDto) throws Exception {
+		
+		int fileNo = boardFileDto.getFileNo();
+		
+		boardFileDto = commonBoardService.fileInfo(fileNo);
+		
+		String fileNm = boardFileDto.getSaveFileNm();
+		
+		String uploadDir = "C:/Users/admin/Desktop/spring-boot-server/src/main/resources/static/upload/board/";
+		
+		String filePath = uploadDir + fileNm;
+		Path path = Paths.get(filePath);
+	    try {
+	        Files.deleteIfExists(path);  // 파일이 있으면 삭제
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        return ResponseEntity.status(500).body("파일 삭제 중 오류 발생");
+	    }
+		
+		commonBoardService.fileDelete(fileNo);
+		return ResponseEntity.ok("삭제완료");
+	}
+	/*
+	@PostMapping("/deletePost")
+	public ResponseEntity<String> deletePost(@RequestBody CommonPostDTO commonPostDto) throws Exception {
+		int postCode = commonPostDto.getPostCode();
+		List<BoardFileDTO> fileList = commonBoardService.getDetailFile(postCode);
+		String uploadDir = "C:/Users/admin/Desktop/spring-boot-server/src/main/resources/static/upload/board/";
+		for (BoardFileDTO fileDto : fileList) {
+	        String fileNm = fileDto.getSaveFileNm();
+	        String filePath = uploadDir + fileNm;
+	        Path path = Paths.get(filePath);
+	        try {
+	            Files.deleteIfExists(path);
+	            System.out.println("파일 삭제 성공: " + filePath);
+	        } catch (IOException e) {
+	            System.err.println("파일 삭제 실패: " + filePath);
+	            e.printStackTrace();
+	        }
+	    }
+		commonBoardService.deleteComments(postCode);
+		commonBoardService.deleteFiles(postCode);
+		commonBoardService.deletePost(postCode);
+		
+		return ResponseEntity.ok("삭제완료");
+	}
+	*/
+	@PostMapping("/deletePost")
+	public ResponseEntity<String> deletePost(@RequestBody CommonPostDTO commonPostDto) throws Exception {
+		int postCode = commonPostDto.getPostCode();
+		
+		commonBoardService.deletePost(postCode);
+		
+		return ResponseEntity.ok("삭제완료");
+	}
+	@PostMapping("/deleteComment")
+	public ResponseEntity<String> deleteComment(@RequestBody CommonCommentDTO commonCommentDto) throws Exception {
+		int commentCode = commonCommentDto.getCommentCode();
+		
+		commonBoardService.deleteComment(commentCode);
+		
+		return ResponseEntity.ok("삭제완료");
+	}
+	@GetMapping("/getDetailComment")
+	public ResponseEntity<CommonCommentDTO> getDetailComment(@RequestParam int commentCode) throws Exception {
+		System.out.println("탯글코드"+commentCode);
+		
+		CommonCommentDTO result = commonBoardService.getDetailComment(commentCode);
+		
+		return ResponseEntity.ok(result);
+	}
+	@PostMapping("/updateComment")
+	public ResponseEntity<String> updateComment(@RequestBody CommonCommentDTO commonCommentDto) {
+		
+			System.out.println("asd");
+			commonBoardService.updateComment(commonCommentDto);
+			return ResponseEntity.ok("수정 완료");
+	}
 }

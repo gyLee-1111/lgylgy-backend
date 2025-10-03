@@ -43,6 +43,30 @@ public interface CommonBoardMapper {
 	public int getCountPost(CommonPostDTO commonPostDto);
 
 	public List<CommonPostDTO> getListNoticePost(String boardCode);
+
+	public void updatePost(CommonPostDTO request);
+
+	public void fileDelete(int fileNo);
+
+	public BoardFileDTO fileInfo(int fileNo);
+
+	public void deletePost(int postCode);
+
+	public void deleteFiles(int postCode);
+
+	public void deleteComments(int postCode);
+
+	public List<Integer> getUnderCode(int postCode);
+
+	public List<Integer> getUnderCodeComment(int commentCode);
+
+	public void deleteComment(int commentCode);
+
+	public CommonCommentDTO getDetailComment(int commentCode);
+
+	public void updateComment(CommonCommentDTO commonCommentDto);
+
+	public void updateViewCount(int postCode);
 	
 	
 }

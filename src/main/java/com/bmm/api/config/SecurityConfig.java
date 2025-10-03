@@ -112,8 +112,8 @@ public class SecurityConfig {
 	@Bean
 	public CorsConfigurationSource corsConfigurationSource() {
 		CorsConfiguration config = new CorsConfiguration();
-	//	config.setAllowedOrigins(List.of("http://localhost:5174"));  // 🔧 프론트 주소
-		config.setAllowedOriginPatterns(List.of("https://*.azurestaticapps.net"));
+		config.setAllowedOrigins(List.of("http://localhost:5174"));  // 🔧 프론트 주소
+	//	config.setAllowedOriginPatterns(List.of("https://*.azurestaticapps.net"));
 		config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
 		config.setAllowedHeaders(List.of("*"));
 		config.setExposedHeaders(List.of("Content-Disposition"));

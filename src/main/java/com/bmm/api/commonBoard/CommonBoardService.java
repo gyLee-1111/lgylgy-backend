@@ -1,6 +1,9 @@
 package com.bmm.api.commonBoard;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +17,8 @@ import com.bmm.api.commonBoard.commonBoardDTO.CommonPostDTO;
 import com.bmm.api.commonBoard.commonBoardDTO.CommonPostEntity;
 import com.bmm.api.commonBoard.commonBoardDTO.FileDownloadDTO;
 import com.bmm.api.commonUtil.DropzoneFileUpload;
+
+import jakarta.transaction.Transactional;
 
 @Service
 public class CommonBoardService {
@@ -139,6 +144,9 @@ public class CommonBoardService {
 //	    return lastNo;
 //	}
 	public CommonPostDTO getDetailPost(int postCode) {
+		
+		
+		
 		return commonBoardMapper.getDetailPost(postCode);
 	}
 	
@@ -178,7 +186,94 @@ public class CommonBoardService {
 		
 		return commonBoardMapper.getListNoticePost(boardCode);
 	}
+
+	public void updatePost(CommonPostDTO request) {
+		
+		commonBoardMapper.updatePost(request);
+	}
+
+	public void fileDelete(int fileNo) {
+		commonBoardMapper.fileDelete(fileNo);
+	}
+
+	public BoardFileDTO fileInfo(int fileNo) {
+		
+		return commonBoardMapper.fileInfo(fileNo);
+	}
+/*
+	public void deletePost(int postCode) {
+		
+		commonBoardMapper.deletePost(postCode);
+	}
+*/
+	public void deleteFiles(int postCode) {
+		commonBoardMapper.deleteFiles(postCode);
+		
+	}
+
+	public void deleteComments(int postCode) {
+		commonBoardMapper.deleteComments(postCode);
+		
+	}
+	@Transactional
+	public void deletePost(int postCode) {
+		
+		List<Integer> underCodes = commonBoardMapper.getUnderCode(postCode);
+		
+//		for (int underCode : underCodes) {
+//		    deletePost(underCode);
+//		}
+		for (int i = 0; i < underCodes.size(); i++) {
+		    int underCode = underCodes.get(i);
+		    deletePost(underCode);
+		}
+		
+		List<BoardFileDTO> fileList = commonBoardMapper.getDetailFile(postCode);
+		String uploadDir = "C:/Users/admin/Desktop/spring-boot-server/src/main/resources/static/upload/board/";
+		for (BoardFileDTO fileDto : fileList) {
+	        String fileNm = fileDto.getSaveFileNm();
+	        String filePath = uploadDir + fileNm;
+	        Path path = Paths.get(filePath);
+	        try {
+	            Files.deleteIfExists(path);
+	            System.out.println("파일 삭제 성공: " + filePath);
+	        } catch (IOException e) {
+	            System.err.println("파일 삭제 실패: " + filePath);
+	            e.printStackTrace();
+	        }
+	    }
+		commonBoardMapper.deleteComments(postCode);
+		commonBoardMapper.deleteFiles(postCode);
+		
+		commonBoardMapper.deletePost(postCode);
+	}
 	
+	@Transactional
+	public void deleteComment(int commentCode) {
+		
+		List<Integer> underCodes = commonBoardMapper.getUnderCodeComment(commentCode);
+		
+		for (int i = 0; i < underCodes.size(); i++) {
+		    int underCode = underCodes.get(i);
+		    deleteComment(underCode);
+		}
+		commonBoardMapper.deleteComment(commentCode);
+	}
+
+	public CommonCommentDTO getDetailComment(int commentCode) {
+		
+		return commonBoardMapper.getDetailComment(commentCode);
+	}
+
+
+	public void updateComment(CommonCommentDTO commonCommentDto) {
+		commonBoardMapper.updateComment(commonCommentDto);
+		
+	}
+
+	public void updateViewCount(int postCode) {
+		commonBoardMapper.updateViewCount(postCode);
+	}
 
 	
 }

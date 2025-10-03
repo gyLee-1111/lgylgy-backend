@@ -1,16 +1,16 @@
 package com.bmm.api.adminMain;
 
-public class AdminUserRoleDTO {
+public class AdminRoleInfoDTO {
 	
 	private String roleCode;
 	
 	private String roleNm;
 	
-	private String useYn;
-	
 	private String roleGroup;
 	
-	private String roleGroupNm;
+	private String codeDec;
+	
+	private String useYn;
 
 	public String getRoleCode() {
 		return roleCode;
@@ -28,14 +28,6 @@ public class AdminUserRoleDTO {
 		this.roleNm = roleNm;
 	}
 
-	public String getUseYn() {
-		return useYn;
-	}
-
-	public void setUseYn(String useYn) {
-		this.useYn = useYn;
-	}
-
 	public String getRoleGroup() {
 		return roleGroup;
 	}
@@ -44,15 +36,24 @@ public class AdminUserRoleDTO {
 		this.roleGroup = roleGroup;
 	}
 
-	public String getRoleGroupNm() {
-		return roleGroupNm;
+	public String getCodeDec() {
+		return codeDec;
 	}
 
-	public void setRoleGroupNm(String roleGroupNm) {
-		this.roleGroupNm = roleGroupNm;
+	public void setCodeDec(String codeDec) {
+		this.codeDec = codeDec;
+	}
+
+	public String getUseYn() {
+		return useYn;
+	}
+
+	public void setUseYn(String useYn) {
+		this.useYn = useYn;
 	}
 
 	
-
 	
+	
+
 }

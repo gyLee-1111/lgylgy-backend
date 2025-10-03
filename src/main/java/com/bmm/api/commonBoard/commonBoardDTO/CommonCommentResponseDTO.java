@@ -14,6 +14,8 @@ public class CommonCommentResponseDTO {
 	
 	private int dethp;
 	
+	private String userId;
+	
 	private String insertUserId;
 	
 	private LocalDateTime insertDt;
@@ -58,6 +60,14 @@ public class CommonCommentResponseDTO {
 		this.dethp = dethp;
 	}
 
+	public String getUserId() {
+		return userId;
+	}
+
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
+
 	public String getInsertUserId() {
 		return insertUserId;
 	}
@@ -73,8 +83,7 @@ public class CommonCommentResponseDTO {
 	public void setInsertDt(LocalDateTime insertDt) {
 		this.insertDt = insertDt;
 	}
-	
-	
+
 
 
 }

@@ -14,14 +14,23 @@ public class AdminMenuDTO {
 	
 	private String roleNm;
 
-	private String roleGroup;
-	
 	private int parentCode;
+	
+	private String menuType;
+	
+	private String menuTypeNm;
+	
+	private String useYn;
 	
 	private String path;
 	
+	private int sortOrder;
+	
+	private String parentNm;
+	
 	private List<AdminMenuDTO> children;
-
+	
+	
 	public int getMenuCode() {
 		return menuCode;
 	}
@@ -62,13 +71,6 @@ public class AdminMenuDTO {
 		this.roleNm = roleNm;
 	}
 
-	public String getRoleGroup() {
-		return roleGroup;
-	}
-
-	public void setRoleGroup(String roleGroup) {
-		this.roleGroup = roleGroup;
-	}
 
 	public int getParentCode() {
 		return parentCode;
@@ -78,12 +80,37 @@ public class AdminMenuDTO {
 		this.parentCode = parentCode;
 	}
 
+	public String getMenuType() {
+		return menuType;
+	}
+
+	public void setMenuType(String menuType) {
+		this.menuType = menuType;
+	}
+
+	public String getMenuTypeNm() {
+		return menuTypeNm;
+	}
+
+	public void setMenuTypeNm(String menuTypeNm) {
+		this.menuTypeNm = menuTypeNm;
+	}
+
 	public List<AdminMenuDTO> getChildren() {
 		return children;
 	}
 
 	public void setChildren(List<AdminMenuDTO> children) {
 		this.children = children;
+	}
+	
+
+	public String getUseYn() {
+		return useYn;
+	}
+
+	public void setUseYn(String useYn) {
+		this.useYn = useYn;
 	}
 
 	public String getPath() {
@@ -94,6 +121,22 @@ public class AdminMenuDTO {
 		this.path = path;
 	}
 
-	
+	public int getSortOrder() {
+		return sortOrder;
+	}
+
+	public void setSortOrder(int sortOrder) {
+		this.sortOrder = sortOrder;
+	}
+
+	public String getParentNm() {
+		return parentNm;
+	}
+
+	public void setParentNm(String parentNm) {
+		this.parentNm = parentNm;
+	}
+
+
 	
 }
