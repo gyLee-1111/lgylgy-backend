@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import jakarta.transaction.Transactional;
 
 @Service
-public class AdminMainService {
+public class AdminAllService {
 	
 	@Autowired
 	private AdminMainMapper adminMainMapper;
