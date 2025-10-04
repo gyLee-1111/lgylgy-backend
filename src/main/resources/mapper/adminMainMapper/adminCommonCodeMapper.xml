@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bmm.api.adminCommonCode.AdminCommonCodeMapper">
+
+
+	<select id="getListCommonUpperCode" resultType="com.bmm.api.adminCommonCode.AdminCommonCodeDTO">
+    	SELECT
+    		COMMON_CODE,
+    		COMMON_CODE_NM,
+    		DESCRIPTION,
+    		COMMON_GROUP_CODE,
+    		USE_YN,
+    		INSERT_USER_ID AS USER_ID,
+    		INSERT_DT
+    	FROM TB_COMMON_CODE_DETAIL
+    	WHERE UPPER_CODE IS NULL OR UPPER_CODE = ''
+		<if test="searchValue != null and searchValue != ''">
+			<choose>
+				<when test="searchType == 'code'">
+					AND COMMON_CODE LIKE '%'||#{searchValue}||'%'
+				</when>
+				<when test="searchType == 'codeNm'">
+					AND COMMON_CODE_NM LIKE '%'||#{searchValue}||'%'
+				</when>
+				<when test="searchType =='' or searchType == null">
+					AND COMMON_CODE LIKE '%'||#{searchValue}||'%' or
+					COMMON_CODE_NM LIKE '%'||#{searchValue}||'%'
+				</when>
+			</choose>
+		</if>
+		ORDER BY INSERT_DT ASC
+		LIMIT #{listView} OFFSET (#{page} - 1) * #{listView}
+
+    	
+	</select>
+	<select id="getCode" parameterType="com.bmm.api.adminCommonCode.AdminCommonCodeDTO" resultType="int">
+		<!--  SQL ID : AdminMainMapper.getCode -->
+		SELECT COUNT(*)
+		FROM TB_COMMON_CODE_DETAIL
+		WHERE COMMON_CODE = #{commonCode}
+    </select>
+    
+    <insert id="insertUpperCommonCode" parameterType="com.bmm.api.adminCommonCode.AdminCommonCodeDTO">
+	    INSERT INTO TB_COMMON_CODE_DETAIL (
+	        COMMON_CODE,
+	        COMMON_CODE_NM,
+	        COMMON_GROUP_CODE,
+	        DESCRIPTION,
+	        USE_YN,
+	        INSERT_USER_ID,
+	        INSERT_DT
+	    ) VALUES (
+	        #{commonCode},
+	        #{commonCodeNm},
+	        #{commonGroupCode},
+	        #{description},
+	        #{useYn},
+	        #{userId},
+	        CURRENT_TIMESTAMP
+	    )
+	</insert>
+	<select id="getDetailUpperCode" parameterType="string" resultType="com.bmm.api.adminCommonCode.AdminCommonCodeDTO">
+		<!--  SQL ID : AdminMainMapper.getDetailUserRole -->
+		SELECT 
+			COMMON_CODE,
+			COMMON_CODE_NM,
+			DESCRIPTION,
+			COMMON_GROUP_CODE,
+			USE_YN
+		FROM TB_COMMON_CODE_DETAIL
+		WHERE COMMON_CODE = #{commonCode}
+    </select>
+    <update  id="updateUpperCommonCode" parameterType="com.bmm.api.adminCommonCode.AdminCommonCodeDTO">
+    <!--  SQL ID : AdminMainMapper.updatUpperCommonCode -->
+	    UPDATE TB_COMMON_CODE_DETAIL
+	    SET
+	    	COMMON_GROUP_CODE = #{commonGroupCode},
+	        COMMON_CODE_NM = #{commonCodeNm},
+	        DESCRIPTION = #{description}
+		WHERE COMMON_CODE = #{commonCode}
+	</update>
+	
+	<delete id="deleteUpperCommonCode" parameterType="string">
+	<!--  SQL ID : AdminMainMapper.deleteUpperCommonCode -->
+	    DELETE
+	    FROM TB_COMMON_CODE_DETAIL
+	    WHERE COMMON_CODE = #{upperCode}
+	</delete>
+	
+    <select id="getListCommonSubCode" parameterType="string" resultType="com.bmm.api.adminCommonCode.AdminCommonCodeDTO">
+    	SELECT
+    		COMMON_CODE,
+    		UPPER_CODE,
+    		COMMON_CODE_NM,
+    		DESCRIPTION,
+    		USE_YN,
+    		INSERT_USER_ID AS USER_ID,
+    		INSERT_DT
+    	FROM TB_COMMON_CODE_DETAIL
+    	WHERE UPPER_CODE = #{commonCode}
+    	ORDER BY INSERT_DT
+    	
+	</select>
+	
+	<select id="getDetailSubCode" parameterType="string" resultType="com.bmm.api.adminCommonCode.AdminCommonCodeDTO">
+		<!--  SQL ID : AdminMainMapper.getDetailUserRole -->
+		SELECT
+			COMMON_CODE,
+			UPPER_CODE,
+			COMMON_CODE_NM,
+			DESCRIPTION,
+			USE_YN
+		FROM TB_COMMON_CODE_DETAIL
+		WHERE COMMON_CODE = #{commonCode}
+    </select>
+    <select id="getSubCode" parameterType="com.bmm.api.adminCommonCode.AdminCommonCodeDTO" resultType="int">
+		<!--  SQL ID : AdminMainMapper.getCode -->
+		SELECT COUNT(*)
+		FROM TB_COMMON_CODE_DETAIL
+		WHERE COMMON_CODE = #{commonCode}
+    </select>
+    <insert id="insertSubCommonCode" parameterType="com.bmm.api.adminCommonCode.AdminCommonCodeDTO">
+	    INSERT INTO TB_COMMON_CODE_DETAIL (
+	        COMMON_CODE,
+	        UPPER_CODE,
+	        COMMON_CODE_NM,
+	        COMMON_GROUP_CODE,
+	        DESCRIPTION,
+	        USE_YN,
+	        INSERT_USER_ID,
+	        INSERT_DT
+	    ) VALUES (
+			#{commonCode},
+	        #{upperCode},
+	        #{commonCodeNm},
+	        #{commonGroupCode},
+	        #{description},
+	        #{useYn},
+	        #{userId},
+	        CURRENT_TIMESTAMP
+	    )
+	</insert>
+
+	<update  id="updateSubCommonCode" parameterType="com.bmm.api.adminCommonCode.AdminCommonCodeDTO">
+    <!--  SQL ID : AdminMainMapper.updatUpperCommonCode -->
+	    UPDATE TB_COMMON_CODE_DETAIL
+	    SET
+	        COMMON_CODE_NM = #{commonCodeNm},
+	        DESCRIPTION = #{description}
+		WHERE COMMON_CODE = #{commonCode}
+	</update>
+	<select id="getSubCodeList" parameterType="string" resultType="int">
+		<!--  SQL ID : AdminMainMapper.getCode -->
+		SELECT COUNT(*)
+		FROM TB_COMMON_CODE_DETAIL
+		WHERE UPPER_CODE = #{upperCode}
+    </select>
+
+	<delete id="deleteSubCommonCode" parameterType="string">
+	<!--  SQL ID : AdminMainMapper.deleteUpperCommonCode -->
+	    DELETE
+	    FROM TB_COMMON_CODE_DETAIL
+	    WHERE COMMON_CODE = #{commonCode}
+	</delete>
+	<select id="getListCommonGroup" resultType="com.bmm.api.adminCommonCode.AdminCommonGroupCodeDTO">
+    	SELECT
+    		COMMON_GROUP_CODE,
+    		COMMON_GROUP_NM,
+    		DESCRIPTION,
+    		USE_YN,
+    		INSERT_USER_ID AS USER_ID,
+    		INSERT_DT
+    	FROM TB_COMMON_CODE_GROUP
+    	ORDER BY INSERT_DT
+	</select>
+	<update  id="updateSubGroupCode" parameterType="com.bmm.api.adminCommonCode.AdminCommonCodeDTO">
+    <!--  SQL ID : AdminMainMapper.updateSubGroupCode -->
+	    UPDATE TB_COMMON_CODE_DETAIL
+	    SET
+	        COMMON_GROUP_CODE = #{commonGroupCode}
+		WHERE UPPER_CODE = #{commonCode}
+	</update>
+	
+	<select id="getCountCommonCode" parameterType="com.bmm.api.adminCommonCode.AdminCommonCodeDTO" resultType="int">
+    
+   <!--  SQL ID : AdminMainMapper.getCountCommonCode -->
+        SELECT COUNT(*)
+		FROM TB_COMMON_CODE_DETAIL
+		WHERE UPPER_CODE IS NULL OR UPPER_CODE = ''
+		<if test="searchValue != null and searchValue != ''">
+			<choose>
+				<when test="searchType == 'code'">
+					AND COMMON_CODE LIKE '%'||#{searchValue}||'%'
+				</when>
+				<when test="searchType == 'codeNm'">
+					AND COMMON_CODE_NM LIKE '%'||#{searchValue}||'%'
+				</when>
+				<when test="searchType =='' or searchType == null">
+					AND COMMON_CODE LIKE '%'||#{searchValue}||'%' or
+					COMMON_CODE_NM LIKE '%'||#{searchValue}||'%'
+				</when>
+			</choose>
+		</if>
+		
+		 
+    </select>
+    <select id="getGroupCode" parameterType="com.bmm.api.adminCommonCode.AdminCommonGroupCodeDTO" resultType="int">
+		<!--  SQL ID : AdminMainMapper.getCode -->
+		SELECT COUNT(*)
+		FROM TB_COMMON_CODE_GROUP
+		WHERE COMMON_GROUP_CODE = #{commonGroupCode}
+    </select>
+    <insert id="insertCommonGroup" parameterType="com.bmm.api.adminCommonCode.AdminCommonGroupCodeDTO">
+	    INSERT INTO TB_COMMON_CODE_GROUP (
+	        COMMON_GROUP_CODE,
+	        COMMON_GROUP_NM,
+	        DESCRIPTION,
+	        USE_YN,
+	        INSERT_USER_ID,
+	        INSERT_DT
+	    ) VALUES (
+			#{commonGroupCode},
+	        #{commonGroupNm},
+	        #{description},
+	        #{useYn},
+	        #{userId},
+	        CURRENT_TIMESTAMP
+	    )
+	</insert>
+	<update  id="updateCommonGroup" parameterType="com.bmm.api.adminCommonCode.AdminCommonGroupCodeDTO">
+    <!--  SQL ID : AdminMainMapper.updateCommonGroup -->
+	    UPDATE TB_COMMON_CODE_GROUP
+	    SET
+	        COMMON_GROUP_NM = #{commonGroupNm},
+	        DESCRIPTION = #{description},
+	        USE_YN = #{useYn}
+		WHERE COMMON_GROUP_CODE = #{commonGroupCode}
+	</update>
+	<select id="getMappingList" parameterType="com.bmm.api.adminCommonCode.AdminCommonGroupCodeDTO" resultType="int">
+		<!--  SQL ID : AdminMainMapper.getGroupCode -->
+		SELECT COUNT(*)
+		FROM TB_COMMON_CODE_DETAIL
+		WHERE COMMON_GROUP_CODE = #{commonGroupCode}
+    </select>
+    <delete id="deleteCommonGroup" parameterType="string">
+	<!--  SQL ID : AdminMainMapper.deleteCommonGroup -->
+	    DELETE
+	    FROM TB_COMMON_CODE_GROUP
+	    WHERE COMMON_GROUP_CODE = #{commonGroupCode}
+	</delete>
+	
+</mapper>

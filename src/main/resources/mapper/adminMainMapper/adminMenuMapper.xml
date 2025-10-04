@@ -1,0 +1,310 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bmm.api.adminMenu.AdminMenuMapper">
+
+	<select id="getAdminMenu" parameterType="string" resultType="com.bmm.api.adminMenu.AdminMenuDTO">
+	
+	<!--	SQL ID : AdminMainMapper.getAdminMenu -->  <!--사용자 권한 리스트 가져오기-->
+		
+		SELECT
+			tum.MENU_CODE,
+			tum.MENU_NM,
+			tum.DEPTH,
+			tum.SORT_ORDER,
+			tr.ROLE_CODE,
+			tr.ROLE_NM,
+			tr.ROLE_GROUP
+		FROM tb_user_menu tum
+		JOIN tb_menu_role tmr ON tum.MENU_CODE = tmr.MENU_CODE
+		JOIN TB_ROLE tr ON tmr.ROLE_CODE = tr.ROLE_CODE
+		WHERE tr.ROLE_CODE = #{roleCode}
+		AND DEPTH = 1
+		AND tum.MENU_TYPE = 'MENU_A'
+		AND tum.USE_YN = 'Y'
+		ORDER BY tum.SORT_ORDER
+		
+	</select>
+	<select id="getAdminSubMenu" parameterType="string" resultType="com.bmm.api.adminMenu.AdminMenuDTO">
+	
+	<!--	SQL ID : AdminMainMapper.getAdminSubMenu -->  <!--사용자 권한 리스트 가져오기-->
+		
+		SELECT
+			tum.MENU_CODE, 
+			tum.MENU_NM,
+			tum.DEPTH,
+			tum.PARENT_CODE,
+			tum.PATH,
+			tum.SORT_ORDER,
+			tr.ROLE_CODE,
+			tr.ROLE_NM,
+			tr.ROLE_GROUP
+		FROM TB_USER_MENU tum
+		JOIN TB_MENU_ROLE tmr ON tum.MENU_CODE = tmr.MENU_CODE
+		JOIN TB_ROLE tr ON tmr.ROLE_CODE = tr.ROLE_CODE
+		WHERE PARENT_CODE IN
+		(SELECT
+			tum.MENU_CODE
+		FROM TB_USER_MENU tum
+		JOIN TB_MENU_ROLE tmr ON tum.MENU_CODE = tmr.MENU_CODE
+		JOIN TB_ROLE tr on tmr.ROLE_CODE = tr.ROLE_CODE
+		WHERE DEPTH = 1)
+		AND tum.USE_YN = 'Y'
+		AND tr.ROLE_CODE = #{roleCode}
+		AND tum.MENU_TYPE = 'MENU_A'
+		ORDER BY tum.SORT_ORDER
+		
+	</select>
+<!--	<select id="getListMenu" parameterType="string" resultType="com.bmm.api.adminMain.AdminMenuDTO">
+		  SQL ID : AdminMainMapper.getListMenu 
+		SELECT 
+			MENU_CODE,
+			MENU_NM,
+			PARENT_CODE,
+			DEPTH,
+			USE_YN,
+			PATH,
+			USE_ADMIN
+		FROM TB_USER_MENU
+		ORDER BY INSERT_DT DESC
+
+    </select>-->
+    <select id="getListMenu" parameterType="string" resultType="com.bmm.api.adminMenu.AdminMenuDTO">
+		<!--  SQL ID : AdminMainMapper.getListMenu -->
+		 WITH RECURSIVE USER_MENU_TREE AS (
+	        SELECT
+				MENU_CODE,
+				MENU_NM,
+				PARENT_CODE,
+				MENU_TYPE,
+				USE_YN,
+				(SELECT COMMON_CODE_NM FROM TB_COMMON_CODE_DETAIL tcd WHERE tcd.COMMON_CODE = MENU_TYPE AND tcd.UPPER_CODE = 'MENU_TYPE') AS MENU_TYPE_NM,
+				DEPTH,
+				PATH,
+				SORT_ORDER,
+				TO_CHAR(SORT_ORDER, 'FM0000000000') AS UPPER_PATH
+			FROM TB_USER_MENU
+			WHERE MENU_TYPE = #{menuType}
+			
+			AND DEPTH = 1
+			
+			UNION ALL
+			SELECT
+		        c.MENU_CODE,
+		        c.MENU_NM,
+		        c.PARENT_CODE,
+		        c.MENU_TYPE,
+		        c.USE_YN,
+		        (SELECT COMMON_CODE_NM FROM TB_COMMON_CODE_DETAIL tcd WHERE tcd.COMMON_CODE = c.MENU_TYPE AND tcd.UPPER_CODE = 'MENU_TYPE') AS MENU_TYPE_NM,
+		        c.DEPTH,
+		        c.PATH,
+		        c.SORT_ORDER,
+		        ct.UPPER_PATH || '-' || TO_CHAR(c.SORT_ORDER, 'FM0000000000') AS UPPER_PATH
+		    FROM TB_USER_MENU c
+		    JOIN USER_MENU_TREE ct ON c.PARENT_CODE = ct.MENU_CODE
+		    WHERE 1 = 1
+			)
+		SELECT *
+		FROM USER_MENU_TREE
+		ORDER BY UPPER_PATH;
+
+    </select>
+
+
+	
+	<select id="getDetailMenu" parameterType="int" resultType="com.bmm.api.adminMenu.AdminMenuDTO">
+    
+   <!--  SQL ID : AdminMainMapper.getDetailMenu -->
+        SELECT
+			tum.MENU_CODE,
+			tum.MENU_NM,
+			tum.PARENT_CODE,
+	        tum.DEPTH,
+	        tum.PATH,
+	        tum.SORT_ORDER,
+	        tum.USE_YN,
+	        tum.MENU_TYPE,
+	        (SELECT COMMON_CODE_NM FROM TB_COMMON_CODE_DETAIL tcd WHERE tcd.COMMON_CODE = MENU_TYPE AND tcd.UPPER_CODE = 'MENU_TYPE') AS MENU_TYPE_NM,
+	        (SELECT MENU_NM FROM TB_USER_MENU tumt WHERE tumt.MENU_CODE = tum.PARENT_CODE) AS PARENT_NM
+		FROM TB_USER_MENU tum
+		WHERE MENU_CODE = #{menuCode}
+		
+    </select>
+    <select id="getDetailMenuRole" parameterType="int" resultType="com.bmm.api.adminMenu.AdminMenuRoleDTO">
+		<!--  SQL ID : AdminMainMapper.getDetailMenuRole -->
+		SELECT 
+			tmr.MENU_CODE,
+			tmr.ROLE_CODE,
+			tr.ROLE_NM
+		FROM TB_MENU_ROLE tmr
+		LEFT OUTER JOIN TB_ROLE tr
+		ON tmr.ROLE_CODE = tr.ROLE_CODE
+		WHERE MENU_CODE = #{menuCode}
+    </select>
+    
+    <select id="getListMenuType"  resultType="com.bmm.api.adminMenu.AdminMenuTypeDTO">
+		<!--  SQL ID : AdminMainMapper.getListMenuType -->
+		SELECT 
+			COMMON_CODE,
+			COMMON_CODE_NM,
+			UPPER_CODE
+		FROM TB_COMMON_CODE_DETAIL
+		WHERE UPPER_CODE = 'MENU_TYPE'
+
+    </select>
+    
+    <select id="findLatestMenuCode" resultType="int">
+		SELECT  MAX(MENU_CODE) AS MENU_CODE
+		FROM TB_USER_MENU
+	</select>
+	
+	<select id="getDepth"  resultType="int">
+		<!--  SQL ID : AdminMainMapper.getDepth -->
+		SELECT 
+			DEPTH
+		FROM TB_USER_MENU
+		WHERE MENU_CODE = #{parentCode}
+
+    </select>
+    <insert id="insertMenu" parameterType="com.bmm.api.adminMenu.AdminMenuDTO">
+	    INSERT INTO TB_USER_MENU (
+	        MENU_CODE,
+	        MENU_NM,
+	        PARENT_CODE,
+	        DEPTH,
+	        USE_YN,
+	        PATH,
+	        SORT_ORDER,
+	        INSERT_DT,
+	        MENU_TYPE
+	    ) VALUES (
+	        #{menuCode},
+	        #{menuNm},
+	        #{parentCode},
+	        #{depth},
+	        #{useYn},
+	        #{path},
+	        #{sortOrder},
+	        CURRENT_TIMESTAMP,
+	        #{menuType}
+	    )
+	</insert>
+	
+	<insert id="insertMenuRole" parameterType="com.bmm.api.adminMenu.AdminMenuRoleDTO">
+	    INSERT INTO TB_MENU_ROLE (
+	        MENU_CODE,
+	        ROLE_CODE
+	    ) VALUES (
+	        #{menuCode},
+	        #{roleCode}
+	    )
+	</insert>
+	
+	<select id="getMenuPath" parameterType="string" resultType="int">
+		<!--  SQL ID : AdminMainMapper.getMenuPath -->
+		SELECT COUNT(*)
+		FROM TB_USER_MENU
+		WHERE PATH = #{path}
+    </select>
+    
+    
+    <select id="getListMenuUpper" parameterType="string" resultType="com.bmm.api.adminMenu.AdminMenuDTO">
+		<!--  SQL ID : AdminMainMapper.getListMenu -->
+        SELECT
+			MENU_CODE,
+			MENU_NM,
+			PARENT_CODE,
+			MENU_TYPE,
+			USE_YN,
+			SORT_ORDER,
+			(SELECT COMMON_CODE_NM FROM TB_COMMON_CODE_DETAIL tcd WHERE tcd.COMMON_CODE = MENU_TYPE AND tcd.UPPER_CODE = 'MENU_TYPE') AS MENU_TYPE_NM,
+			DEPTH,
+			PATH
+		FROM TB_USER_MENU
+		WHERE MENU_TYPE = #{menuType}
+		AND DEPTH = 1
+		ORDER BY SORT_ORDER
+			
+    </select>
+	
+
+	<select id="getMenuSort" parameterType="com.bmm.api.adminMenu.AdminMenuDTO" resultType="int">
+		<!--  SQL ID : AdminMainMapper.getMenuSort -->
+		SELECT COUNT(*)
+		FROM TB_USER_MENU
+		WHERE MENU_TYPE = #{menuType}
+		AND PARENT_CODE = #{parentCode}
+    </select>
+    
+    <update id="updateSortOrder" parameterType="com.bmm.api.adminMenu.AdminMenuDTO">
+	    UPDATE TB_USER_MENU
+	    SET
+	    	SORT_ORDER = #{sortOrder}
+	    WHERE MENU_CODE = #{menuCode}
+	</update>
+	
+	<delete id="deleteMenu" parameterType="int">
+	<!--  SQL ID : AdminMainMapper.deleteMenu -->
+	    DELETE
+	    FROM TB_USER_MENU
+	    WHERE MENU_CODE = #{menuCode}
+	</delete>
+	<delete id="deleteMenurole" parameterType="int">
+	<!--  SQL ID : AdminMainMapper.deleteMenurole -->
+	    DELETE
+	    FROM TB_MENU_ROLE
+	    WHERE MENU_CODE = #{menuCode}
+	</delete>
+	<update id="contectSortOrder" parameterType="com.bmm.api.adminMenu.AdminMenuDTO">
+	    UPDATE TB_USER_MENU
+	    SET
+	    	SORT_ORDER = sort_order - 1
+	    WHERE MENU_TYPE = #{menuType}
+	    AND DEPTH = #{depth}
+	    AND PARENT_CODE = #{parentCode}
+	    AND SORT_ORDER > #{sortOrder}
+	</update>
+	
+	<select id="getCountChildren" parameterType="int" resultType="int">
+		<!--  SQL ID : AdminMainMapper.getCountChildren -->
+		SELECT COUNT(*)
+		FROM TB_USER_MENU
+		WHERE PARENT_CODE = #{menuCode}
+    </select>
+    <select id="getListParent"  resultType="com.bmm.api.adminMenu.AdminMenuDTO">
+		<!--  SQL ID : AdminMainMapper.getListMenuType -->
+		SELECT 
+			MENU_CODE AS PARENT_CODE,
+			MENU_NM AS PARENT_NM
+		FROM TB_USER_MENU
+		WHERE DEPTH = 1
+
+    </select>
+    
+    <update  id="updateMenu" parameterType="com.bmm.api.adminMenu.AdminMenuDTO">
+    <!--  SQL ID : AdminMainMapper.updateBoard -->
+	    UPDATE TB_USER_MENU
+	    SET
+	        MENU_NM = #{menuNm},
+	        PARENT_CODE = #{parentCode},
+	        USE_YN = #{useYn},
+	        SORT_ORDER = #{sortOrder},
+	        DEPTH = #{depth},
+	        PATH = #{path}
+		WHERE MENU_CODE = #{menuCode}
+	</update>
+    
+   	<select id="getListRole" parameterType="string" resultType="com.bmm.api.adminMenu.AdminUserRoleDTO">
+		<!--  SQL ID : AdminMainMapper.getListRole -->
+		SELECT 
+			ROLE_CODE,
+			ROLE_NM,
+			USE_YN,
+			ROLE_GROUP,
+			(SELECT DESCRIPTION FROM TB_ROLE_GROUP trg WHERE trg.ROLE_GROUP = tr.ROLE_GROUP) AS ROLE_GROUP_NM
+		FROM TB_ROLE tr
+		ORDER BY ROLE_GROUP,INSERT_DT
+
+    </select>
+   
+	
+</mapper>

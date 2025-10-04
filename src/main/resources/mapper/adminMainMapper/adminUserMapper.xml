@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bmm.api.adminUser.AdminUserMapper">
+
+
+	
+	<select id="getListRole" parameterType="string" resultType="com.bmm.api.adminUser.AdminUserRoleDTO">
+		<!--  SQL ID : AdminMainMapper.getListRole -->
+		SELECT 
+			ROLE_CODE,
+			ROLE_NM,
+			USE_YN,
+			ROLE_GROUP,
+			(SELECT DESCRIPTION FROM TB_ROLE_GROUP trg WHERE trg.ROLE_GROUP = tr.ROLE_GROUP) AS ROLE_GROUP_NM
+		FROM TB_ROLE tr
+		ORDER BY ROLE_GROUP,INSERT_DT
+
+    </select>
+
+    
+    <select id="getListUser" parameterType="string" resultType="com.bmm.api.adminUser.AdminUserDTO">
+		<!--  SQL ID : AdminMainMapper.getListUser -->
+		SELECT 
+			USER_ID,
+			USER_NM,
+			USER_GENDER,
+			(SELECT COMMON_CODE_NM FROM TB_COMMON_CODE_DETAIL tcd WHERE tcd.COMMON_CODE = USER_GENDER AND tcd.UPPER_CODE = 'USER_GENDER') AS USER_GENDER_NM,
+			USER_BIRTH,
+			PHONE_NUMBER,
+			EMAIL,
+			LOCK_YN,
+			DORMANT_YN,
+			MEMBERSHIP,
+			(SELECT COMMON_CODE_NM FROM TB_COMMON_CODE_DETAIL tcd WHERE tcd.COMMON_CODE = MEMBERSHIP AND tcd.UPPER_CODE = 'MEMBERSHIP') AS MEMBERSHIP_NM,
+			INSERT_DT
+		FROM TB_USER
+		ORDER BY INSERT_DT ASC
+
+    </select>
+    
+    <select id="getDetailUser" parameterType="string" resultType="com.bmm.api.adminUser.AdminUserDTO">
+		<!--  SQL ID : AdminMainMapper.getDetailUser -->
+		SELECT 
+			USER_ID,
+			USER_NM,
+			USER_GENDER,
+			(SELECT COMMON_CODE_NM FROM TB_COMMON_CODE_DETAIL tcd WHERE tcd.COMMON_CODE = USER_GENDER AND tcd.UPPER_CODE = 'USER_GENDER') AS USER_GENDER_NM,
+			USER_BIRTH,
+			PHONE_NUMBER,
+			EMAIL,
+			LOCK_YN,
+			DORMANT_YN,
+			MEMBERSHIP,
+			(SELECT COMMON_CODE_NM FROM TB_COMMON_CODE_DETAIL tcd WHERE tcd.COMMON_CODE = MEMBERSHIP AND tcd.UPPER_CODE = 'MEMBERSHIP') AS MEMBERSHIP_NM,
+			INSERT_DT
+		FROM TB_USER
+		WHERE USER_ID = #{userId}
+    </select>
+    
+    <select id="getDetailUserRole" parameterType="string" resultType="com.bmm.api.adminUser.AdminUserMappingDTO">
+		<!--  SQL ID : AdminMainMapper.getDetailUserRole -->
+		SELECT 
+			tur.USER_ID,
+			tur.ROLE_CODE,
+			tr.ROLE_NM
+		FROM TB_USER_ROLE tur
+		LEFT OUTER JOIN TB_ROLE tr
+		ON tur.ROLE_CODE = tr.ROLE_CODE
+		WHERE USER_ID = #{userId}
+    </select>
+    <select id="getUserGenderList"  resultType="com.bmm.api.adminUser.AdminUserGenderDTO">
+		<!--  SQL ID : AdminMainMapper.getUserGenderList -->
+		SELECT 
+			COMMON_CODE,
+			COMMON_CODE_NM,
+			UPPER_CODE
+		FROM TB_COMMON_CODE_DETAIL
+		WHERE UPPER_CODE = 'USER_GENDER'
+
+    </select>
+    <select id="getUserMembershipList"  resultType="com.bmm.api.adminUser.AdminUserMembershipDTO">
+		<!--  SQL ID : AdminMainMapper.getUserMembershipList -->
+		SELECT 
+			COMMON_CODE,
+			COMMON_CODE_NM,
+			UPPER_CODE
+		FROM TB_COMMON_CODE_DETAIL
+		WHERE UPPER_CODE = 'MEMBERSHIP'
+
+    </select>
+    <delete id="deleteUserRole" parameterType="string">
+	<!--  SQL ID : AdminMainMapper.deleteUserRole -->
+	    DELETE
+	    FROM TB_USER_ROLE
+	    WHERE USER_ID = #{userId}
+	</delete>
+	<update  id="updateUser" parameterType="com.bmm.api.adminUser.AdminUserDTO">
+    <!--  SQL ID : AdminMainMapper.updateUser -->
+	    UPDATE TB_USER
+	    SET
+	        USER_NM = #{userNm},
+	        USER_GENDER = #{userGender},
+	        USER_BIRTH = #{userBirth},
+	        LOCK_YN = #{lockYn},
+	        DORMANT_YN = #{dormantYn},
+	        MEMBERSHIP = #{membership},
+	        PHONE_NUMBER = #{phoneNumber}
+		WHERE USER_ID = #{userId}
+	</update>
+	
+	<insert id="insertUserRole" parameterType="com.bmm.api.adminUser.AdminUserMappingDTO">
+	    INSERT INTO TB_USER_ROLE (
+	        USER_ID,
+	        ROLE_CODE
+	    ) VALUES (
+	        #{userId},
+	        #{roleCode}
+	    )
+	</insert>
+	<update  id="changeLockYn" parameterType="com.bmm.api.adminUser.AdminUserDTO">
+    <!--  SQL ID : AdminMainMapper.changeLockYn -->
+	    UPDATE TB_USER
+	    SET
+	        LOCK_YN = #{lockYn}
+		WHERE USER_ID = #{userId}
+	</update>
+	<update  id="changeDormantYn" parameterType="com.bmm.api.adminUser.AdminUserDTO">
+    <!--  SQL ID : AdminMainMapper.changeDormantYn -->
+	    UPDATE TB_USER
+	    SET
+	        DORMANT_YN = #{dormantYn}
+		WHERE USER_ID = #{userId}
+	</update>
+	<select id="checkUserId" parameterType="string" resultType="int">
+		<!--  SQL ID : AdminMainMapper.checkUserId -->
+		SELECT COUNT(*)
+		FROM TB_USER
+		WHERE USER_ID = #{userId}
+    </select>
+	<insert id="insertUser" parameterType="com.bmm.api.adminUser.AdminUserDTO">
+	    INSERT INTO TB_USER (
+	        USER_ID,
+	        USER_PASSWORD,
+	        USER_NM,
+	        USER_NICKNM,
+	        USER_GENDER,
+	        USER_BIRTH,
+	        PHONE_NUMBER,
+	        LOCK_YN,
+	        DORMANT_YN,
+	        MEMBERSHIP,
+	        INSERT_DT
+	    ) VALUES (
+	        #{userId},
+	        #{userPassword},
+	        #{userNm},
+	        #{userNm},
+	        #{userGender},
+	        #{userBirth},
+	        #{phoneNumber},
+	        #{lockYn},
+			#{dormantYn},
+			#{membership},
+			CURRENT_TIMESTAMP
+	    )
+	</insert>
+	<delete id="deleteUser" parameterType="string">
+	<!--  SQL ID : AdminMainMapper.deleteMenurole -->
+	    DELETE
+	    FROM TB_USER
+	    WHERE USER_ID = #{userId}
+	</delete>
+	<select id="getCountUser" parameterType="com.bmm.api.adminUser.AdminUserDTO" resultType="int">
+    
+   <!--  SQL ID : CommonBoardMapper.getCountUser -->
+        SELECT COUNT(*)
+		FROM TB_USER
+		WHERE 1=1
+		<if test="searchValue != null and searchValue != ''">
+			<choose>
+				<when test="searchType == 'title'">
+					AND USER_ID LIKE '%'||#{searchValue}||'%'
+				</when>
+				<when test="searchType == 'user'">
+					AND USER_NM LIKE '%'||#{searchValue}||'%'
+				</when>
+				<when test="searchType =='' or searchType == null">
+					AND USER_ID LIKE '%'||#{searchValue}||'%' or
+					USER_NM LIKE '%'||#{searchValue}||'%'
+				</when>
+			</choose>
+		</if>
+		
+		 
+    </select>
+    <select id="getListUserResponse" parameterType="com.bmm.api.adminUser.AdminUserDTO" resultType="com.bmm.api.adminMain.AdminUserDTO">
+		<!--  SQL ID : AdminMainMapper.getListUser -->
+		SELECT 
+			USER_ID,
+			USER_NM,
+			USER_GENDER,
+			(SELECT COMMON_CODE_NM FROM TB_COMMON_CODE_DETAIL tcd WHERE tcd.COMMON_CODE = USER_GENDER AND tcd.UPPER_CODE = 'USER_GENDER') AS USER_GENDER_NM,
+			USER_BIRTH,
+			PHONE_NUMBER,
+			EMAIL,
+			LOCK_YN,
+			DORMANT_YN,
+			MEMBERSHIP,
+			(SELECT COMMON_CODE_NM FROM TB_COMMON_CODE_DETAIL tcd WHERE tcd.COMMON_CODE = MEMBERSHIP AND tcd.UPPER_CODE = 'MEMBERSHIP') AS MEMBERSHIP_NM,
+			INSERT_DT
+		FROM TB_USER
+		WHERE 1=1
+		<if test="searchValue != null and searchValue != ''">
+			<choose>
+				<when test="searchType == 'title'">
+					AND USER_ID LIKE '%'||#{searchValue}||'%'
+				</when>
+				<when test="searchType == 'user'">
+					AND USER_NM LIKE '%'||#{searchValue}||'%'
+				</when>
+				<when test="searchType =='' or searchType == null">
+					AND USER_ID LIKE '%'||#{searchValue}||'%' or
+					USER_NM LIKE '%'||#{searchValue}||'%'
+				</when>
+			</choose>
+		</if>
+		ORDER BY INSERT_DT ASC
+		LIMIT #{listView} OFFSET (#{page} - 1) * #{listView}
+
+    </select>
+   
+	
+</mapper>

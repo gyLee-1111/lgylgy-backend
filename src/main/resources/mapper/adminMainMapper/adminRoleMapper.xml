@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bmm.api.adminRole.AdminRoleMapper">
+
+
+    <select id="getListRoleGroup" resultType="com.bmm.api.adminRole.AdminRoleGroupDTO">
+    	SELECT
+    		ROLE_GROUP,
+    		ROLE_GROUP_NM,
+    		DESCRIPTION,
+    		USE_YN
+    	FROM TB_ROLE_GROUP
+    	ORDER BY ROLE_GROUP
+    	
+	</select>
+	<insert id="insertRole" parameterType="com.bmm.api.adminRole.AdminRoleInfoDTO">
+	    INSERT INTO TB_ROLE (
+	        ROLE_CODE,
+	        ROLE_NM,
+	        CODE_DEC,
+	        USE_YN,
+	        ROLE_GROUP,
+	        INSERT_DT
+	    ) VALUES (
+	        #{roleCode},
+	        #{roleNm},
+	        #{roleNm},
+	        #{useYn},
+			#{roleGroup},
+			CURRENT_TIMESTAMP
+	    )
+	</insert>
+	<select id="checkRoleCode" parameterType="string" resultType="int">
+		<!--  SQL ID : AdminMainMapper.checkRoleCode -->
+		SELECT COUNT(*)
+		FROM TB_ROLE
+		WHERE ROLE_CODE = #{roleCode}
+    </select>
+    <select id="getDetailRole" parameterType="string" resultType="com.bmm.api.adminRole.AdminRoleInfoDTO">
+		<!--  SQL ID : AdminMainMapper.getDetailUserRole -->
+		SELECT 
+			ROLE_CODE,
+			ROLE_NM,
+			ROLE_GROUP,
+			USE_YN
+		FROM TB_ROLE
+		WHERE ROLE_CODE = #{roleCode}
+    </select>
+    <update  id="updateRole" parameterType="com.bmm.api.adminRole.AdminRoleInfoDTO">
+    <!--  SQL ID : AdminMainMapper.changeDormantYn -->
+	    UPDATE TB_ROLE
+	    SET
+	        ROLE_NM = #{roleNm},
+	        CODE_DEC = #{roleNm},
+	        ROLE_GROUP = #{roleGroup}
+		WHERE ROLE_CODE = #{roleCode}
+	</update>
+	<delete id="deleteRole" parameterType="string">
+	<!--  SQL ID : AdminMainMapper.deleteRole -->
+	    DELETE
+	    FROM TB_ROLE
+	    WHERE ROLE_CODE = #{roleCode}
+	</delete>
+	<update  id="changeUseYn" parameterType="com.bmm.api.adminRole.AdminUserRoleDTO">
+    <!--  SQL ID : AdminMainMapper.changeLockYn -->
+	    UPDATE TB_ROLE
+	    SET
+	        USE_YN = #{useYn}
+		WHERE ROLE_CODE = #{roleCode}
+	</update>
+	<select id="checkRoleGroupCode" parameterType="string" resultType="int">
+		<!--  SQL ID : AdminMainMapper.checkRoleGroupCode -->
+		SELECT COUNT(*)
+		FROM TB_ROLE_GROUP
+		WHERE ROLE_GROUP = #{roleGroup}
+    </select>
+    <insert id="insertRoleGroup" parameterType="com.bmm.api.adminRole.AdminRoleGroupDTO">
+	    INSERT INTO TB_ROLE_GROUP (
+	        ROLE_GROUP,
+	        ROLE_GROUP_NM,
+	        DESCRIPTION,
+	        USE_YN
+	    ) VALUES (
+	        #{roleGroup},
+	        #{roleGroup},
+	        #{description},
+	        #{useYn}
+	    )
+	</insert>
+	<select id="getDetailRoleGroup" parameterType="string" resultType="com.bmm.api.adminRole.AdminRoleGroupDTO">
+		<!--  SQL ID : AdminMainMapper.getDetailRoleGroup -->
+		SELECT 
+			ROLE_GROUP,
+			DESCRIPTION,
+			USE_YN
+		FROM TB_ROLE_GROUP
+		WHERE ROLE_GROUP = #{roleGroup}
+    </select>
+    
+    <update  id="updateRoleGroup" parameterType="com.bmm.api.adminRole.AdminRoleGroupDTO">
+    <!--  SQL ID : AdminMainMapper.updateRoleGroup -->
+	    UPDATE TB_ROLE_GROUP
+	    SET
+	        DESCRIPTION = #{description}
+		WHERE ROLE_GROUP = #{roleGroup}
+	</update>
+	<delete id="deleteRoleGroup" parameterType="string">
+	<!--  SQL ID : AdminMainMapper.deleteRole -->
+	    DELETE
+	    FROM TB_ROLE_GROUP
+	    WHERE ROLE_GROUP = #{roleGroup}
+	</delete>
+	<update  id="changeUseYnGroup" parameterType="com.bmm.api.adminRole.AdminRoleGroupDTO">
+    <!--  SQL ID : AdminMainMapper.changeLockYn -->
+	    UPDATE TB_ROLE_GROUP
+	    SET
+	        USE_YN = #{useYn}
+		WHERE ROLE_GROUP = #{roleGroup}
+	</update>
+	
+	
+</mapper>

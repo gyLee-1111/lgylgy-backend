@@ -36,6 +36,7 @@
 			tum.MENU_CODE,
 			tum.MENU_NM,
 			tum.DEPTH,
+			tum.SORT_ORDER,
 			tr.ROLE_CODE,
 			tr.ROLE_NM,
 			tr.ROLE_GROUP
@@ -44,8 +45,8 @@
 		JOIN TB_ROLE tr ON tmr.ROLE_CODE = tr.ROLE_CODE
 		WHERE tr.ROLE_CODE = #{roleCode}
 		AND DEPTH = 1
-		AND tum.USE_ADMIN = 'N'
-		ORDER BY tum.MENU_CODE
+		AND tum.MENU_TYPE = 'MENU_H'
+		ORDER BY tum.SORT_ORDER
 	</select>
 	<select id="getUserSubMenu" parameterType="string" resultType="com.bmm.api.logIn.UserMenuDTO">
 	
@@ -57,6 +58,7 @@
 			tum.DEPTH,
 			tum.PARENT_CODE,
 			tum.PATH,
+			tum.SORT_ORDER,
 			tr.ROLE_CODE,
 			tr.ROLE_NM,
 			tr.ROLE_GROUP
@@ -71,8 +73,8 @@
 		JOIN TB_ROLE tr on tmr.ROLE_CODE = tr.ROLE_CODE
 		WHERE DEPTH = 1)
 		AND tr.ROLE_CODE = #{roleCode}
-		AND tum.USE_ADMIN = 'N'
-		ORDER BY tum.MENU_CODE
+		AND tum.MENU_TYPE = 'MENU_H'
+		ORDER BY tum.SORT_ORDER
 		
 	</select>
 	

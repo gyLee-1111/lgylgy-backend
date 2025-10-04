@@ -473,5 +473,89 @@
 			WHERE BOARD_CODE = #{boardCode}
 			AND tp.NOTICE_CHECK = 'Y'
     </select>
-	
+    <update id="updatePost" parameterType="com.bmm.api.commonBoard.commonBoardDTO.CommonPostDTO">
+    <!--  SQL ID : CommonBoardMapper.insertPost -->
+		UPDATE TB_POST
+		SET
+		    POST_NM =  #{postNm},
+		    POST_INFO = #{postInfo}
+		   WHERE POST_CODE = #{postCode}
+		   
+	</update>
+	<delete id="fileDelete" parameterType="int">
+	<!--  SQL ID : CommonBoardMapper.fileDelete -->
+	    DELETE
+	    FROM TB_POST_FILE
+	    WHERE FILE_NO = #{fileNo}
+	</delete>
+    <select id="fileInfo" parameterType="int" resultType="com.bmm.api.commonBoard.commonBoardDTO.BoardFileDTO">
+	<!--  SQL ID : CommonBoardMapper.fileInfo -->
+	    SELECT
+	    	FILE_NM,
+	    	FILE_NO,
+			SAVE_FILE_NM,
+			FILE_SIZE,
+			POST_CODE
+	    FROM TB_POST_FILE
+	    WHERE FILE_NO = #{fileNo}
+	</select>
+	<delete id="deletePost" parameterType="int">
+	<!--  SQL ID : CommonBoardMapper.deletePost -->
+	    DELETE
+	    FROM TB_POST
+	    WHERE POST_CODE = #{postCode}
+	</delete>
+	<delete id="deleteFiles" parameterType="int">
+	<!--  SQL ID : CommonBoardMapper.fileDelete -->
+	    DELETE
+	    FROM TB_POST_FILE
+	    WHERE POST_CODE = #{postCode}
+	</delete>
+	<delete id="deleteComments" parameterType="int">
+	<!--  SQL ID : CommonBoardMapper.deleteComments -->
+	    DELETE
+	    FROM TB_COMMENT
+	    WHERE POST_CODE = #{postCode}
+	</delete>
+	<select id="getUnderCode" parameterType="int" resultType="int">
+	    SELECT 
+			POST_CODE
+	    FROM TB_POST
+	    WHERE UPPER_CODE = #{postCode}
+	</select>
+	<select id="getUnderCodeComment" parameterType="int" resultType="int">
+	    SELECT 
+			COMMENT_CODE
+	    FROM TB_COMMENT
+	    WHERE UPPER_CODE = #{commentCode}
+	</select>
+	<delete id="deleteComment" parameterType="int">
+	<!--  SQL ID : CommonBoardMapper.deleteComments -->
+	    DELETE
+	    FROM TB_COMMENT
+	    WHERE COMMENT_CODE = #{commentCode}
+	</delete>
+	<select id="getDetailComment" parameterType="int" resultType="com.bmm.api.commonBoard.commonBoardDTO.CommonCommentDTO">
+    
+   <!--  SQL ID : CommonBoardMapper.getDetailComment -->
+        SELECT
+			COMMENT_CONTENT
+		FROM TB_COMMENT
+		WHERE COMMENT_CODE = #{commentCode}
+		
+    </select>
+    <update  id="updateComment" parameterType="com.bmm.api.commonBoard.commonBoardDTO.CommonCommentDTO">
+    <!--  SQL ID : AdminMainMapper.updateComment -->
+	    UPDATE TB_COMMENT
+	    SET
+	        COMMENT_CONTENT = #{commentContent}
+		WHERE COMMENT_CODE = #{commentCode}
+	</update>
+	<update  id="updateViewCount" parameterType="int">
+    <!--  SQL ID : AdminMainMapper.updateViewCount -->
+	    UPDATE TB_POST
+	    SET
+	        VIEW_COUNT = VIEW_COUNT + 1
+		WHERE POST_CODE = #{postCode}
+	</update>
 </mapper>
